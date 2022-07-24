@@ -7,7 +7,8 @@ class AppContextProvider extends Component {
     //web3 state
     signerAddress: null,
     signature: null,
-    isMember: false
+    isMember: false,
+    member: null
   };
 
   setWeb3Data = (data) => {

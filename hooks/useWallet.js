@@ -33,9 +33,7 @@ export const useWallet = () => {
     const modalProvider = await web3Modal.connect();
     const ethersProvider = new ethers.providers.Web3Provider(modalProvider);
 
-    const signerAddress = (
-      await ethersProvider.getSigner().getAddress()
-    ).toLowerCase();
+    const signerAddress = await ethersProvider.getSigner().getAddress();
 
     let signature = await ethersProvider
       .getSigner()

@@ -8,18 +8,23 @@ import { Raids } from '../../views/Raids';
 
 export async function getServerSideProps(context) {
   const { db } = await connectToDatabase();
+  const recordCount = await db
+    .collection('raids')
+    .find({ status: 'Awaiting' })
+    .count();
   const raids = await db
     .collection('raids')
-    .aggregate([{ $match: { status: 'Awaiting' } }])
+    .find({ status: 'Awaiting' })
     .toArray();
   return {
     props: {
-      raids: JSON.stringify(raids)
+      raids: JSON.stringify(raids),
+      recordCount
     }
   };
 }
 
-const Index = ({ raids }) => {
+const Index = ({ raids, recordCount }) => {
   const context = useContext(AppContext);
   const [accountValidated, setAccountValidated] = useState(false);
 
@@ -49,7 +54,7 @@ const Index = ({ raids }) => {
       )}
 
       {context.isMember ? (
-        <Raids raids={JSON.parse(raids)} />
+        <Raids raids={JSON.parse(raids)} recordCount={recordCount} />
       ) : accountValidated ? (
         <Flex direction='column' alignItems='center' m='auto' color='white'>
           <Box fontSize='40px'>

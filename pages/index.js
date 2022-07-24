@@ -1,24 +1,47 @@
-import { Text, Button, SimpleGrid, Box, Flex, Spinner } from '@chakra-ui/react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  Text,
+  Button,
+  SimpleGrid,
+  Box,
+  Flex,
+  Spinner,
+  Image
+} from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { AppContext } from '../context/AppContext';
 import { validateMembership } from '../utils/web3';
+import { getMemberByAddress } from '../utils/requests';
+import { getProfile } from '../utils/3Box';
 
 export default function Home() {
   const context = useContext(AppContext);
   const router = useRouter();
   const [accountValidated, setAccountValidated] = useState(false);
+  const [boxProfile, setBoxProfile] = useState(null);
 
   const checkMembership = async () => {
     const isMember = await validateMembership(context.signerAddress);
     context.setWeb3Data({ isMember });
+    if (isMember) {
+      const profile = await getProfile(context.signerAddress);
+      setBoxProfile(profile);
+    }
+  };
+
+  const getMemberProfile = async () => {
+    const { member } = await getMemberByAddress(context.signerAddress);
+    context.setWeb3Data({ member: member[0] });
     setAccountValidated(true);
   };
 
   useEffect(() => {
-    context.signerAddress && checkMembership();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (context.signerAddress) {
+      checkMembership();
+      getMemberProfile();
+    }
   }, [context.signerAddress]);
 
   return (
@@ -53,16 +76,44 @@ export default function Home() {
 
       {accountValidated && (
         <Flex direction='column' alignItems='center' m='auto' color='white'>
-          <Box fontSize='40px'>
-            <i
-              className={
-                context.isMember ? 'fa-solid fa-lock-open' : 'fa-solid fa-lock'
-              }
-            ></i>
-          </Box>
-          <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
-            {context.isMember ? 'You are a member.' : 'You are not a member.'}
-          </Text>
+          {context.member.name ? (
+            <>
+              {boxProfile && (
+                <Image
+                  src={boxProfile.imageUrl}
+                  w='100px'
+                  borderRadius='50%'
+                  alt='profile image'
+                />
+              )}
+              <Text
+                textAlign='center'
+                maxW='500px'
+                fontFamily='uncial'
+                fontSize='18px'
+                mt='1rem'
+                textDecoration='underline'
+                onClick={() => router.push(`/members/${context.member._id}`)}
+                cursor='pointer'
+                _hover={{ color: 'red' }}
+              >
+                {`Welcome ${context.member.name}`}!
+              </Text>
+            </>
+          ) : context.isMember ? (
+            <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
+              You are a member onchain but no records found offchain.
+            </Text>
+          ) : (
+            <>
+              <Box fontSize='40px' color='purple'>
+                <i className='fa-solid fa-lock'></i>
+              </Box>
+              <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
+                You are not a member onchain.
+              </Text>
+            </>
+          )}
         </Flex>
       )}
 
@@ -80,11 +131,12 @@ export default function Home() {
           justifyContent='flex-start'
           bg='red'
           onClick={() => router.push('/bids')}
+          textTransform='uppercase'
         >
           <Box mr='1rem'>
             <i className='fa-solid fa-dungeon'></i>
           </Box>
-          To the consultation queue
+          To the bidding queue
         </Button>
         <Button
           w='100%'
@@ -92,6 +144,7 @@ export default function Home() {
           isDisabled={!context.isMember}
           bg={context.isMember ? 'red' : 'greyLight'}
           onClick={() => router.push('/consultations')}
+          textTransform='uppercase'
         >
           <Box mr='1rem'>
             <i className='fa-solid fa-dungeon'></i>
@@ -104,6 +157,7 @@ export default function Home() {
           isDisabled={!context.isMember}
           bg={context.isMember ? 'red' : 'greyLight'}
           onClick={() => router.push('/raids')}
+          textTransform='uppercase'
         >
           <Box mr='1rem'>
             <i className='fa-solid fa-dungeon'></i>
@@ -116,6 +170,7 @@ export default function Home() {
           isDisabled={!context.isMember}
           bg={context.isMember ? 'red' : 'greyLight'}
           onClick={() => router.push('/members')}
+          textTransform='uppercase'
         >
           <Box mr='1rem'>
             <i className='fa-solid fa-dungeon'></i>

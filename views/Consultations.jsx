@@ -31,7 +31,7 @@ const StyledPrimaryButton = styled(Button)`
 
 const RECORDS_PER_PAGE = 10;
 
-export const Consultations = ({ consultations }) => {
+export const Consultations = ({ consultations, recordCount }) => {
   const [fetching, setFetching] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,40 +43,35 @@ export const Consultations = ({ consultations }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [filterType, setFilterType] = useState(tabsAndType[tabIndex]);
 
-  const paginate = (croppedRecords, pageNumber) => {
-    pageNumber ? setCurrentPage(pageNumber) : null;
-    const indexOfLastRecord = currentPage * RECORDS_PER_PAGE;
-    const indexOfFirstRecord = indexOfLastRecord - RECORDS_PER_PAGE;
-    const currentRecords = croppedRecords.slice(
-      indexOfFirstRecord,
-      indexOfLastRecord
-    );
-
-    setCurrentRecords(currentRecords);
-  };
-
-  const cropRecords = (page, _consultations) => {
-    setTotalPages(Math.ceil(_consultations.length / RECORDS_PER_PAGE));
-    paginate(_consultations, page);
+  const cropRecords = (_consultations, _recordCount) => {
+    setTotalPages(Math.ceil(_recordCount / RECORDS_PER_PAGE));
+    setCurrentRecords(_consultations);
   };
 
   const fetchConsultations = async () => {
     setFetching(true);
-    const data = await getAllConsultations(filterType);
-    cropRecords(1, data.consultations);
+    const data = await getAllConsultations(
+      filterType,
+      (currentPage - 1) * RECORDS_PER_PAGE
+    );
+    cropRecords(data.consultations, data.recordCount);
     setFetching(false);
   };
 
   useEffect(() => {
-    cropRecords(currentPage, consultations);
-  }, [currentPage]);
-
-  useEffect(() => {
-    cropRecords(1, consultations);
+    cropRecords(consultations, recordCount);
   }, [consultations]);
 
   useEffect(() => {
     fetchConsultations();
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (currentPage === 1) {
+      fetchConsultations();
+    } else {
+      setCurrentPage(1);
+    }
   }, [filterType]);
 
   return (
@@ -92,14 +87,7 @@ export const Consultations = ({ consultations }) => {
       {!fetching && (
         <>
           <Flex w='100%' alignItems='center'>
-            <Text
-              maxW='350px'
-              bg='red'
-              p='5px'
-              color='white'
-              fontFamily='rubik'
-              mr='auto'
-            >
+            <Text maxW='350px' bg='red' p='5px' fontFamily='rubik' mr='auto'>
               Consultations Portal
             </Text>
             <Tabs

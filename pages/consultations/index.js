@@ -8,18 +8,24 @@ import { Consultations } from '../../views/Consultations';
 
 export async function getServerSideProps(context) {
   const { db } = await connectToDatabase();
+  const recordCount = await db
+    .collection('consultations')
+    .find({ consultation_hash: { $not: { $ne: null } } })
+    .count();
   const consultations = await db
     .collection('consultations')
     .find({ consultation_hash: { $not: { $ne: null } } })
+    .limit(10)
     .toArray();
   return {
     props: {
-      consultations: JSON.stringify(consultations)
+      consultations: JSON.stringify(consultations),
+      recordCount
     }
   };
 }
 
-const Index = ({ consultations }) => {
+const Index = ({ consultations, recordCount }) => {
   const context = useContext(AppContext);
   const [accountValidated, setAccountValidated] = useState(false);
 
@@ -49,7 +55,10 @@ const Index = ({ consultations }) => {
       )}
 
       {context.isMember ? (
-        <Consultations consultations={JSON.parse(consultations)} />
+        <Consultations
+          consultations={JSON.parse(consultations)}
+          recordCount={recordCount}
+        />
       ) : accountValidated ? (
         <Flex direction='column' alignItems='center' m='auto' color='white'>
           <Box fontSize='40px'>

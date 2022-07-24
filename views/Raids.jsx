@@ -31,7 +31,7 @@ const StyledPrimaryButton = styled(Button)`
 
 const RECORDS_PER_PAGE = 10;
 
-export const Raids = ({ raids }) => {
+export const Raids = ({ raids, recordCount }) => {
   const [fetching, setFetching] = useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,40 +43,35 @@ export const Raids = ({ raids }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [filterType, setFilterType] = useState(tabsAndType[tabIndex]);
 
-  const paginate = (croppedRecords, pageNumber) => {
-    pageNumber ? setCurrentPage(pageNumber) : null;
-    const indexOfLastRecord = currentPage * RECORDS_PER_PAGE;
-    const indexOfFirstRecord = indexOfLastRecord - RECORDS_PER_PAGE;
-    const currentRecords = croppedRecords.slice(
-      indexOfFirstRecord,
-      indexOfLastRecord
-    );
-
-    setCurrentRecords(currentRecords);
-  };
-
-  const cropRecords = (page, _raids) => {
-    setTotalPages(Math.ceil(_raids.length / RECORDS_PER_PAGE));
-    paginate(_raids, page);
+  const cropRecords = (_raids, _recordCount) => {
+    setTotalPages(Math.ceil(_recordCount / RECORDS_PER_PAGE));
+    setCurrentRecords(_raids);
   };
 
   const fetchRaids = async () => {
     setFetching(true);
-    const data = await getAllRaids(filterType);
-    cropRecords(1, data.raids);
+    const data = await getAllRaids(
+      filterType,
+      (currentPage - 1) * RECORDS_PER_PAGE
+    );
+    cropRecords(data.raids, data.recordCount);
     setFetching(false);
   };
 
   useEffect(() => {
-    cropRecords(currentPage, raids);
-  }, [currentPage]);
-
-  useEffect(() => {
-    cropRecords(1, raids);
+    cropRecords(raids, recordCount);
   }, [raids]);
 
   useEffect(() => {
     fetchRaids();
+  }, [currentPage]);
+
+  useEffect(() => {
+    if (currentPage === 1) {
+      fetchRaids();
+    } else {
+      setCurrentPage(1);
+    }
   }, [filterType]);
 
   return (
@@ -92,14 +87,7 @@ export const Raids = ({ raids }) => {
       {!fetching && (
         <>
           <Flex w='100%' alignItems='center'>
-            <Text
-              maxW='350px'
-              bg='red'
-              p='5px'
-              color='white'
-              fontFamily='rubik'
-              mr='auto'
-            >
+            <Text maxW='350px' bg='red' p='5px' fontFamily='rubik' mr='auto'>
               Raids Portal
             </Text>
             <Tabs

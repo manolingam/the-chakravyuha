@@ -65,7 +65,7 @@ export const Header = () => {
 
       {context.signerAddress && (
         <Flex justify='center' align='center' zIndex={5} fontFamily='jetbrains'>
-          <Popover placement='bottom'>
+          <Popover placement='left'>
             <PopoverTrigger>
               <Button
                 h='auto'
@@ -81,15 +81,19 @@ export const Header = () => {
                 </Text>
               </Button>
             </PopoverTrigger>
-            <PopoverContent bg='none' w='auto'>
+            <PopoverContent bg='none' w='auto' border='none'>
+              {context.member && (
+                <Link href={`/members/${context.member._id}`} passHref>
+                  <Button bg='red'>Profile</Button>
+                </Link>
+              )}
               <Button
-                color='white'
+                bg='red'
                 onClick={() => {
                   disconnect();
                   window.location.reload();
                 }}
-                variant='primary'
-                mt='0'
+                mt='5px'
               >
                 Disconnect
               </Button>

@@ -99,6 +99,7 @@ export const Member = ({ member }) => {
                         color='white'
                         mr='1rem'
                         cursor='pointer'
+                        _hover={{ opacity: '0.8' }}
                       >
                         <i className='fa-solid fa-envelope'></i>
                       </Tag>
@@ -119,6 +120,7 @@ export const Member = ({ member }) => {
                         color='white'
                         mr='1rem'
                         cursor='pointer'
+                        _hover={{ opacity: '0.8' }}
                       >
                         <i className='fa-brands fa-discord'></i>
                       </Tag>
@@ -141,6 +143,7 @@ export const Member = ({ member }) => {
                         color='white'
                         mr='1rem'
                         cursor='pointer'
+                        _hover={{ opacity: '0.8' }}
                       >
                         <i className='fa-brands fa-telegram'></i>
                       </Tag>
@@ -160,6 +163,7 @@ export const Member = ({ member }) => {
                 value={application.introduction}
                 bg='blackLight'
                 border='none'
+                minH='100px'
               />
             </Flex>
           </Flex>

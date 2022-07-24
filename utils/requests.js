@@ -1,7 +1,10 @@
 import axios from 'axios';
 
-export const getAllConsultations = async (filter) => {
-  const consultations = await axios.post('/api/consultations', { filter });
+export const getAllConsultations = async (filter, skip) => {
+  const consultations = await axios.post('/api/consultations', {
+    filter,
+    skip
+  });
   return consultations.data;
 };
 
@@ -15,14 +18,19 @@ export const getApplication = async (id) => {
   return application.data;
 };
 
-export const getAllRaids = async (filter) => {
-  const raids = await axios.post('/api/raids', { filter });
+export const getAllRaids = async (filter, skip) => {
+  const raids = await axios.post('/api/raids', { filter, skip });
   return raids.data;
 };
 
 export const getAllMembers = async (skip) => {
   const members = await axios.post('/api/members', { skip });
   return members.data;
+};
+
+export const getMemberByAddress = async (signerAddress) => {
+  const member = await axios.post('/api/member', { signerAddress });
+  return member.data;
 };
 
 export const getAllBids = async () => {

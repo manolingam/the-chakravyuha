@@ -34,7 +34,7 @@ export const Members = ({ members, recordCount }) => {
   const [currentRecords, setCurrentRecords] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
 
-  const cropRecords = (page, _members) => {
+  const cropRecords = (_members) => {
     setTotalPages(Math.ceil(recordCount / RECORDS_PER_PAGE));
     setCurrentRecords(_members);
   };
@@ -42,7 +42,7 @@ export const Members = ({ members, recordCount }) => {
   const fetchMembers = async () => {
     setFetching(true);
     const data = await getAllMembers((currentPage - 1) * RECORDS_PER_PAGE);
-    cropRecords(currentPage, data.members);
+    cropRecords(data.members);
     setFetching(false);
   };
 
@@ -51,7 +51,7 @@ export const Members = ({ members, recordCount }) => {
   }, [currentPage]);
 
   useEffect(() => {
-    cropRecords(1, members);
+    cropRecords(members);
   }, [members]);
 
   return (
@@ -67,14 +67,7 @@ export const Members = ({ members, recordCount }) => {
       {!fetching && (
         <>
           <Flex w='100%' alignItems='center'>
-            <Text
-              maxW='350px'
-              bg='red'
-              p='5px'
-              color='white'
-              fontFamily='rubik'
-              mr='auto'
-            >
+            <Text maxW='350px' bg='red' p='5px' fontFamily='rubik' mr='auto'>
               Members Portal
             </Text>
           </Flex>
