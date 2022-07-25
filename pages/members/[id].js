@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 import { AppContext } from '../../context/AppContext';
 import { connectToDatabase } from '../../utils/mongo';
 import { validateMembership } from '../../utils/web3';
-import { Member } from '../../views/Member';
+import { Member } from '../../views/members/Member';
 import { Page404 } from '../../shared/404';
 
 export async function getServerSideProps(context) {

@@ -32,8 +32,8 @@ export default function Home() {
   };
 
   const getMemberProfile = async () => {
-    const { member } = await getMemberByAddress(context.signerAddress);
-    context.setWeb3Data({ member: member[0] });
+    const member = await getMemberByAddress(context.signerAddress);
+    context.setWeb3Data({ member });
     setAccountValidated(true);
   };
 
@@ -129,14 +129,15 @@ export default function Home() {
         <Button
           w='100%'
           justifyContent='flex-start'
-          bg='red'
-          onClick={() => router.push('/bids')}
+          isDisabled={!context.isMember}
+          bg={context.isMember ? 'red' : 'greyLight'}
+          onClick={() => router.push('/applications')}
           textTransform='uppercase'
         >
           <Box mr='1rem'>
             <i className='fa-solid fa-dungeon'></i>
           </Box>
-          To the bidding queue
+          To the applications
         </Button>
         <Button
           w='100%'

@@ -7,13 +7,17 @@ import {
   NumberInput,
   NumberInputField,
   SimpleGrid,
+  Tab,
+  Tabs,
+  TabList,
   Spinner
 } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-import { getAllMembers } from '../utils/requests';
+import { getRaids } from '../../utils/requests';
+import { theme } from '../../styles/theme';
 
 const StyledPrimaryButton = styled(Button)`
   min-width: 160px;
@@ -27,32 +31,55 @@ const StyledPrimaryButton = styled(Button)`
 
 const RECORDS_PER_PAGE = 10;
 
-export const Members = ({ members, recordCount }) => {
+export const AllRaids = ({ raidsOnLoad }) => {
   const [fetching, setFetching] = useState(false);
 
+  const [allRecords, setAllRecords] = useState(raidsOnLoad);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentRecords, setCurrentRecords] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
 
-  const cropRecords = (_members) => {
-    setTotalPages(Math.ceil(recordCount / RECORDS_PER_PAGE));
-    setCurrentRecords(_members);
+  const tabsAndType = ['awaiting', 'preparing', 'raiding', 'shipped'];
+
+  const [tabIndex, setTabIndex] = useState(0);
+  const [filterType, setFilterType] = useState(tabsAndType[tabIndex]);
+
+  const paginate = (_records, _pageNumber) => {
+    _pageNumber ? setCurrentPage(_pageNumber) : null;
+    const indexOfLastRecord = currentPage * RECORDS_PER_PAGE;
+    const indexOfFirstRecord = indexOfLastRecord - RECORDS_PER_PAGE;
+    const currentRecords = _records.slice(
+      indexOfFirstRecord,
+      indexOfLastRecord
+    );
+
+    setCurrentRecords(currentRecords);
   };
 
-  const fetchMembers = async () => {
+  const cropRecords = (_raids, _page) => {
+    setTotalPages(Math.ceil(_raids.length / RECORDS_PER_PAGE));
+    paginate(_raids, _page);
+  };
+
+  const fetchRaids = async () => {
     setFetching(true);
-    const data = await getAllMembers((currentPage - 1) * RECORDS_PER_PAGE);
-    cropRecords(data.members);
+    const records = await getRaids(filterType);
+    setAllRecords(records);
+    cropRecords(records, 1);
     setFetching(false);
   };
 
   useEffect(() => {
-    fetchMembers();
+    cropRecords(allRecords);
   }, [currentPage]);
 
   useEffect(() => {
-    cropRecords(members);
-  }, [members]);
+    fetchRaids();
+  }, [filterType]);
+
+  useEffect(() => {
+    cropRecords(allRecords, 1);
+  }, [raidsOnLoad]);
 
   return (
     <Flex
@@ -68,14 +95,78 @@ export const Members = ({ members, recordCount }) => {
         <>
           <Flex w='100%' alignItems='center'>
             <Text maxW='350px' bg='red' p='5px' fontFamily='rubik' mr='auto'>
-              Members Portal
+              Raids Portal
             </Text>
+            <Tabs
+              fontFamily='spaceMono'
+              color='purpleLight'
+              align='end'
+              isLazy
+              defaultIndex={tabIndex}
+              variant='unstyled'
+              outline='none'
+              onChange={(index) => {
+                setTabIndex(index);
+                setFilterType(tabsAndType[index]);
+              }}
+            >
+              <TabList>
+                <Tab
+                  _selected={{
+                    color: theme.colors.blackDark,
+                    bg: theme.colors.purpleLight
+                  }}
+                  _focus={{
+                    outline: '0 !important'
+                  }}
+                >
+                  <i className='fa-solid fa-circle-pause'></i>{' '}
+                  <Text ml='5px'>Awaiting</Text>
+                </Tab>
+                <Tab
+                  _selected={{
+                    color: theme.colors.blackDark,
+                    bg: theme.colors.purpleLight
+                  }}
+                  _focus={{
+                    outline: '0 !important'
+                  }}
+                >
+                  <i className='fa-solid fa-ban'></i>{' '}
+                  <Text ml='5px'>Preparing</Text>
+                </Tab>
+                <Tab
+                  _selected={{
+                    color: theme.colors.blackDark,
+                    bg: theme.colors.purpleLight
+                  }}
+                  _focus={{
+                    outline: '0 !important'
+                  }}
+                >
+                  <i className='fa-solid fa-circle-play'></i>{' '}
+                  <Text ml='5px'>Raiding</Text>
+                </Tab>
+                <Tab
+                  _selected={{
+                    color: theme.colors.blackDark,
+                    bg: theme.colors.purpleLight
+                  }}
+                  _focus={{
+                    outline: '0 !important'
+                  }}
+                >
+                  <i className='fa-solid fa-circle-play'></i>{' '}
+                  <Text ml='5px'>Shipped</Text>
+                </Tab>
+              </TabList>
+            </Tabs>
           </Flex>
 
           <SimpleGrid columns='1' w='100%' my='2rem'>
             {currentRecords.map((record, index) => {
               return (
-                <Link key={index} href={`/members/${record._id}`} passHref>
+                <Link key={index} href={`/raids/${record._id}`} passHref>
                   <Flex
                     direction='row'
                     p='1rem'
@@ -90,15 +181,21 @@ export const Members = ({ members, recordCount }) => {
                     }}
                     my='5px'
                   >
-                    <Text>{record.name}</Text>
-                    {/* <Tag bg='purpleLight' fontSize='xs' mr='2rem'>
-                      {filterType === 'apprentice' && (
+                    <Text>{record.raid_name}</Text>
+                    <Tag bg='purpleLight' fontSize='xs' mr='2rem'>
+                      {filterType === 'awaiting' && (
                         <i className='fa-solid fa-circle-pause'></i>
                       )}
-                      {filterType === 'member' && (
+                      {filterType === 'preparing' && (
                         <i className='fa-solid fa-ban'></i>
                       )}
-                    </Tag> */}
+                      {filterType === 'raiding' && (
+                        <i className='fa-solid fa-circle-play'></i>
+                      )}
+                      {filterType === 'shipped' && (
+                        <i className='fa-solid fa-circle-play'></i>
+                      )}
+                    </Tag>
                   </Flex>
                 </Link>
               );

@@ -4,7 +4,7 @@ import { createBreakpoints } from '@chakra-ui/theme-tools';
 const breakpoints = createBreakpoints({
   base: '320px',
   md: '580px',
-  lg: '1026px'
+  lg: '720px'
 });
 
 export const theme = extendTheme({

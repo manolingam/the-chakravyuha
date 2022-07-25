@@ -2,23 +2,25 @@ import { Flex, Box, Text, Spinner } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
-import { connectToDatabase } from '../../utils/mongo';
+
 import { validateMembership } from '../../utils/web3';
-import { Members } from '../../views/Members';
+import { AllMembers } from '../../views/members/AllMembers';
+
+import connectMongo from '../../utils/mongoose';
+import Member from '../../models/member';
 
 export async function getServerSideProps(context) {
-  const { db } = await connectToDatabase();
-  const recordCount = await db.collection('members').find({}).count();
-  const members = await db.collection('members').find({}).limit(10).toArray();
+  await connectMongo();
+  // const recordCount = await Member.find({}).count();
+  const members = await Member.find({});
   return {
     props: {
-      members: JSON.stringify(members),
-      recordCount
+      members: JSON.stringify(members)
     }
   };
 }
 
-const Index = ({ members, recordCount }) => {
+const Index = ({ members }) => {
   const context = useContext(AppContext);
   const [accountValidated, setAccountValidated] = useState(false);
 
@@ -48,7 +50,7 @@ const Index = ({ members, recordCount }) => {
       )}
 
       {context.isMember ? (
-        <Members members={JSON.parse(members)} recordCount={recordCount} />
+        <AllMembers membersOnLoad={JSON.parse(members)} />
       ) : accountValidated ? (
         <Flex direction='column' alignItems='center' m='auto' color='white'>
           <Box fontSize='40px'>

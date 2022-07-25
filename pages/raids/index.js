@@ -2,29 +2,24 @@ import { Flex, Box, Text, Spinner } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
-import { connectToDatabase } from '../../utils/mongo';
 import { validateMembership } from '../../utils/web3';
-import { Raids } from '../../views/Raids';
+import { AllRaids } from '../../views/raids/AllRaids';
+
+import connectMongo from '../../utils/mongoose';
+import Raid from '../../models/raid';
 
 export async function getServerSideProps(context) {
-  const { db } = await connectToDatabase();
-  const recordCount = await db
-    .collection('raids')
-    .find({ status: 'Awaiting' })
-    .count();
-  const raids = await db
-    .collection('raids')
-    .find({ status: 'Awaiting' })
-    .toArray();
+  await connectMongo();
+  // const recordCount = await Raid.find({ status: 'Awaiting' }).count();
+  const raids = await Raid.find({ status: 'Awaiting' });
   return {
     props: {
-      raids: JSON.stringify(raids),
-      recordCount
+      raids: JSON.stringify(raids)
     }
   };
 }
 
-const Index = ({ raids, recordCount }) => {
+const Index = ({ raids }) => {
   const context = useContext(AppContext);
   const [accountValidated, setAccountValidated] = useState(false);
 
@@ -54,7 +49,7 @@ const Index = ({ raids, recordCount }) => {
       )}
 
       {context.isMember ? (
-        <Raids raids={JSON.parse(raids)} recordCount={recordCount} />
+        <AllRaids raidsOnLoad={JSON.parse(raids)} />
       ) : accountValidated ? (
         <Flex direction='column' alignItems='center' m='auto' color='white'>
           <Box fontSize='40px'>

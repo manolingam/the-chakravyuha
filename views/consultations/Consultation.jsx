@@ -9,7 +9,7 @@ import {
 } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 
-import { getQueuedBids } from '../utils/requests';
+import { getQueuedBids } from '../../utils/requests';
 
 export const Consultation = ({ consultation }) => {
   const [bidStatus, setBidStatus] = useState(null);

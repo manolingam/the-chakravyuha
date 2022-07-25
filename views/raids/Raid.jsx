@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Flex,
   Text,
@@ -12,22 +13,52 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import { getConsultation } from '../utils/requests';
+import {
+  getConsultationById,
+  getRaidPartyByRaid,
+  getMultipleMembersByIds
+} from '../../utils/requests';
 
 export const Raid = ({ raid }) => {
   const router = useRouter();
-  const formattedRaid = raid[0];
+  const [loading, setLoading] = useState(true);
 
-  const [consultation, setConsultation] = useState(null);
+  const [raidInfo, setRaidInfo] = useState({});
+  const [clericInfo, setClericInfo] = useState({});
+  const [consultationInfo, setConsultationInfo] = useState({});
+  const [raidPartyInfo, setRaidPartyInfo] = useState([]);
+
+  const fetchCleric = async () => {
+    const { members } = await getMultipleMembersByIds([raid[0].cleric]);
+    setClericInfo({
+      id: members[0]._id,
+      name: members[0].name
+    });
+  };
 
   const fetchConsultation = async () => {
-    const { consultation } = await getConsultation(formattedRaid.consultation);
-    setConsultation(consultation[0]);
+    const { consultation } = await getConsultationById(raidInfo.consultation);
+    setConsultationInfo(consultation[0]);
+  };
+
+  const fetchRaidParty = async () => {
+    const { raidparty } = await getRaidPartyByRaid(raidInfo._id);
+    if (raidparty.length > 0) {
+      const { members } = await getMultipleMembersByIds(raidparty[0].members);
+      setRaidPartyInfo(members);
+    }
   };
 
   useEffect(() => {
-    fetchConsultation();
+    setRaidInfo(raid[0]);
   }, []);
+
+  useEffect(() => {
+    fetchCleric();
+    fetchConsultation();
+    fetchRaidParty();
+    setLoading(false);
+  }, [raidInfo]);
 
   return (
     <Flex
@@ -42,8 +73,8 @@ export const Raid = ({ raid }) => {
       p='2rem'
       my='2rem'
     >
-      {!consultation && <Spinner color='red' />}
-      {consultation && (
+      {loading && <Spinner color='red' />}
+      {!loading && (
         <>
           <Flex direction='column' w='75%'>
             <Flex
@@ -65,35 +96,31 @@ export const Raid = ({ raid }) => {
                   fontSize='sm'
                 >
                   <i className='fa-solid fa-dollar-sign'></i>{' '}
-                  {consultation.budget}
+                  {consultationInfo.budget}
                 </Text>
-                <Link
-                  href={`/consultations/${formattedRaid.consultation}`}
-                  passHref
-                >
+                <Link href={`/consultations/${consultationInfo._id}`} passHref>
                   <Text
                     color='red'
                     fontFamily='rubik'
                     textDecoration='underline'
                     cursor='pointer'
                   >
-                    {formattedRaid.raid_name}{' '}
-                    <i className='fa-solid fa-link'></i>
+                    {raidInfo.raid_name} <i className='fa-solid fa-link'></i>
                   </Text>
                 </Link>
               </Flex>
               <Flex direction='column'>
                 <Tag mb='5px' bg='purpleLight' w='100%'>
-                  {consultation.project_type}
+                  {consultationInfo.project_type}
                 </Tag>
                 <Tag w='100%' bg='purpleLight'>
-                  {formattedRaid.category}
+                  {consultationInfo.category}
                 </Tag>
               </Flex>
             </Flex>
 
             <Flex direction='column' color='white'>
-              <Text>{consultation.project_desc}</Text>
+              <Text>{consultationInfo.project_desc}</Text>
             </Flex>
 
             <Flex direction='column'>
@@ -101,7 +128,7 @@ export const Raid = ({ raid }) => {
                 Required Services
               </Text>
               <UnorderedList>
-                {consultation.services_req.map((service, index) => {
+                {consultationInfo.services_req.map((service, index) => {
                   return (
                     <ListItem key={index} color='white' fontSize='sm'>
                       {service}
@@ -123,49 +150,48 @@ export const Raid = ({ raid }) => {
             <Button
               bg='red'
               w='100%'
-              onClick={() => router.push(`/member/${formattedRaid.cleric}`)}
+              onClick={() => router.push(`/member/${clericInfo._id}`)}
             >
               Cleric Info
             </Button>
 
             <Divider my='1rem' />
-            {formattedRaid.status !== 'Lost' &&
-              formattedRaid.status !== 'Shipped' && (
-                <Flex w='100%' direction='column' alignItems='center'>
-                  <Text my='1rem' fontFamily='spaceMono' color='purpleLight'>
-                    Required Roles
-                  </Text>
-                  {formattedRaid.roles_required.length > 0 ? (
-                    <UnorderedList>
-                      {formattedRaid.roles_required.map((service, index) => {
-                        return (
-                          <ListItem key={index} color='white' fontSize='sm'>
-                            {service}
-                          </ListItem>
-                        );
-                      })}
-                    </UnorderedList>
-                  ) : (
-                    <Button bg='red' w='100%' mb='1rem' isDisabled>
-                      <i className='fa-solid fa-ban'></i>
-                      <Text ml='5px'>Add Roles</Text>
-                    </Button>
-                  )}
-                </Flex>
-              )}
-            {formattedRaid.status === 'Shipped' && (
+            {raidInfo.status !== 'Lost' && raidInfo.status !== 'Shipped' && (
+              <Flex w='100%' direction='column' alignItems='center'>
+                <Text my='1rem' fontFamily='spaceMono' color='purpleLight'>
+                  Required Roles
+                </Text>
+                {raidInfo.roles_required.length > 0 ? (
+                  <UnorderedList>
+                    {raidInfo.roles_required.map((service, index) => {
+                      return (
+                        <ListItem key={index} color='white' fontSize='sm'>
+                          {service}
+                        </ListItem>
+                      );
+                    })}
+                  </UnorderedList>
+                ) : (
+                  <Button bg='red' w='100%' mb='1rem' isDisabled>
+                    <i className='fa-solid fa-ban'></i>
+                    <Text ml='5px'>Add Roles</Text>
+                  </Button>
+                )}
+              </Flex>
+            )}
+            {raidInfo.status === 'Shipped' && (
               <Button bg='red' w='100%' mb='1rem' isDisabled>
                 <i className='fa-solid fa-ban'></i>
                 <Text ml='5px'>Shipped</Text>
               </Button>
             )}
-            {formattedRaid.status === 'Lost' && (
+            {raidInfo.status === 'Lost' && (
               <Button bg='red' w='100%' mb='1rem' isDisabled>
                 <i className='fa-solid fa-ban'></i>
                 <Text ml='5px'>Lost</Text>
               </Button>
             )}
-            {formattedRaid.status === 'Raiding' && (
+            {raidInfo.status === 'Raiding' && (
               <Button bg='red' w='100%' mb='1rem' isDisabled>
                 <i className='fa-solid fa-ban'></i>
                 <Text ml='5px'>Raiding</Text>

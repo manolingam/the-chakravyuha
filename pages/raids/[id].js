@@ -5,7 +5,7 @@ import { ObjectId } from 'mongodb';
 import { AppContext } from '../../context/AppContext';
 import { connectToDatabase } from '../../utils/mongo';
 import { validateMembership } from '../../utils/web3';
-import { Raid } from '../../views/Raid';
+import { Raid } from '../../views/raids/Raid';
 import { Page404 } from '../../shared/404';
 
 export async function getServerSideProps(context) {

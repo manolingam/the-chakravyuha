@@ -16,8 +16,8 @@ import styled from '@emotion/styled';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
-import { getAllConsultations } from '../utils/requests';
-import { theme } from '../styles/theme';
+import { getConsultations } from '../../utils/requests';
+import { theme } from '../../styles/theme';
 
 const StyledPrimaryButton = styled(Button)`
   min-width: 160px;
@@ -31,9 +31,10 @@ const StyledPrimaryButton = styled(Button)`
 
 const RECORDS_PER_PAGE = 10;
 
-export const Consultations = ({ consultations, recordCount }) => {
+export const AllConsultations = ({ consultationsOnLoad }) => {
   const [fetching, setFetching] = useState(false);
 
+  const [allRecords, setAllRecords] = useState(consultationsOnLoad);
   const [currentPage, setCurrentPage] = useState(1);
   const [currentRecords, setCurrentRecords] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
@@ -43,36 +44,42 @@ export const Consultations = ({ consultations, recordCount }) => {
   const [tabIndex, setTabIndex] = useState(0);
   const [filterType, setFilterType] = useState(tabsAndType[tabIndex]);
 
-  const cropRecords = (_consultations, _recordCount) => {
-    setTotalPages(Math.ceil(_recordCount / RECORDS_PER_PAGE));
-    setCurrentRecords(_consultations);
+  const paginate = (_records, _pageNumber) => {
+    _pageNumber ? setCurrentPage(_pageNumber) : null;
+    const indexOfLastRecord = currentPage * RECORDS_PER_PAGE;
+    const indexOfFirstRecord = indexOfLastRecord - RECORDS_PER_PAGE;
+    const currentRecords = _records.slice(
+      indexOfFirstRecord,
+      indexOfLastRecord
+    );
+
+    setCurrentRecords(currentRecords);
+  };
+
+  const cropRecords = (_consultations, _page) => {
+    setTotalPages(Math.ceil(_consultations.length / RECORDS_PER_PAGE));
+    paginate(_consultations, _page);
   };
 
   const fetchConsultations = async () => {
     setFetching(true);
-    const data = await getAllConsultations(
-      filterType,
-      (currentPage - 1) * RECORDS_PER_PAGE
-    );
-    cropRecords(data.consultations, data.recordCount);
+    const records = await getConsultations(filterType);
+    setAllRecords(records);
+    cropRecords(records, 1);
     setFetching(false);
   };
 
   useEffect(() => {
-    cropRecords(consultations, recordCount);
-  }, [consultations]);
-
-  useEffect(() => {
-    fetchConsultations();
+    cropRecords(allRecords);
   }, [currentPage]);
 
   useEffect(() => {
-    if (currentPage === 1) {
-      fetchConsultations();
-    } else {
-      setCurrentPage(1);
-    }
+    fetchConsultations();
   }, [filterType]);
+
+  useEffect(() => {
+    cropRecords(allRecords, 1);
+  }, [consultationsOnLoad]);
 
   return (
     <Flex

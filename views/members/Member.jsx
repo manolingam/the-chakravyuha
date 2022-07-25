@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import {
   Flex,
   Text,
@@ -18,7 +19,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import { getApplication } from '../utils/requests';
+import { getApplicationById } from '../../utils/requests';
 
 export const Member = ({ member }) => {
   const router = useRouter();
@@ -27,7 +28,9 @@ export const Member = ({ member }) => {
   const [application, setApplication] = useState(null);
 
   const fetchApplication = async () => {
-    const { application } = await getApplication(formattedMember.application);
+    const { application } = await getApplicationById(
+      formattedMember.application
+    );
     setApplication(application[0]);
   };
 

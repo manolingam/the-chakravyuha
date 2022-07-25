@@ -2,28 +2,25 @@ import { Flex, Box, Text, Spinner } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
+
 import { validateMembership } from '../../utils/web3';
-import { AllConsultations } from '../../views/Consultations/AllConsultations';
+import { AllApplications } from '../../views/applications/AllApplications';
 
 import connectMongo from '../../utils/mongoose';
-import Consultation from '../../models/consultation';
+import Application from '../../models/application';
 
 export async function getServerSideProps(context) {
   await connectMongo();
-  // const recordCount = await Consultation.find({
-  //   consultation_hash: { $not: { $ne: null } }
-  // }).count();
-  const consultations = await Consultation.find({
-    consultation_hash: { $not: { $ne: null } }
-  });
+  // const recordCount = await Member.find({}).count();
+  const applications = await Application.find({});
   return {
     props: {
-      consultations: JSON.stringify(consultations)
+      applications: JSON.stringify(applications)
     }
   };
 }
 
-const Index = ({ consultations }) => {
+const Index = ({ applications }) => {
   const context = useContext(AppContext);
   const [accountValidated, setAccountValidated] = useState(false);
 
@@ -53,7 +50,7 @@ const Index = ({ consultations }) => {
       )}
 
       {context.isMember ? (
-        <AllConsultations consultationsOnLoad={JSON.parse(consultations)} />
+        <AllApplications applicationsOnLoad={JSON.parse(applications)} />
       ) : accountValidated ? (
         <Flex direction='column' alignItems='center' m='auto' color='white'>
           <Box fontSize='40px'>
