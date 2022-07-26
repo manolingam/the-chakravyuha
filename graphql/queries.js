@@ -26,9 +26,15 @@ export const CONSULTATION_QUERY = gql`
       additional_info
       submission_hash
       consultation_hash
+      delivery_priorities
+      submission_type
       raid {
         _id
         invoice_address
+        cleric {
+          _id
+          name
+        }
       }
     }
   }

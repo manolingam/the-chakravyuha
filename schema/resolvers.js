@@ -152,6 +152,10 @@ const resolvers = {
     raid_party: async (_raid) => {
       const _party = await RaidParty.findOne({ raid: _raid._id });
       return _party;
+    },
+    cleric: async (_raid) => {
+      const _cleric = await Member.findOne({ _id: _raid.cleric });
+      return _cleric;
     }
   },
   RaidParty: {

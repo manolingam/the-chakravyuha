@@ -15,7 +15,7 @@ export const Layout = ({ children }) => {
         justifyContent='space-between'
         alignItems='center'
         mx='auto'
-        bg='blackDark'
+        // bg='blackDark'
       >
         <Header />
         {children}

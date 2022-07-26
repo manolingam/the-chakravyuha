@@ -52,7 +52,7 @@ export default function Home() {
       alignItems='center'
     >
       {!context.signerAddress && (
-        <Flex direction='column' alignItems='center' m='auto' color='white'>
+        <Flex direction='column' alignItems='center' m='auto'>
           <Box fontSize='40px'>
             <i className='fa-solid fa-compass'></i>
           </Box>
@@ -64,7 +64,7 @@ export default function Home() {
       )}
 
       {context.signerAddress && !accountValidated && (
-        <Flex direction='column' alignItems='center' m='auto' color='white'>
+        <Flex direction='column' alignItems='center' m='auto'>
           <Box fontSize='40px'>
             <Spinner color='red' />
           </Box>
@@ -75,7 +75,7 @@ export default function Home() {
       )}
 
       {accountValidated && (
-        <Flex direction='column' alignItems='center' m='auto' color='white'>
+        <Flex direction='column' alignItems='center' m='auto'>
           {context.member.name ? (
             <>
               {boxProfile && (
@@ -92,10 +92,11 @@ export default function Home() {
                 fontFamily='uncial'
                 fontSize='18px'
                 mt='1rem'
+                color='red'
                 textDecoration='underline'
                 onClick={() => router.push(`/members/${context.member._id}`)}
                 cursor='pointer'
-                _hover={{ color: 'red' }}
+                _hover={{ color: 'black' }}
               >
                 {`Welcome ${context.member.name}`}!
               </Text>

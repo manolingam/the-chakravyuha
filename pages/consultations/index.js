@@ -41,7 +41,7 @@ const Index = ({ consultations }) => {
   return (
     <Flex w='80%'>
       {!context.signerAddress && (
-        <Flex direction='column' alignItems='center' m='auto' color='white'>
+        <Flex direction='column' alignItems='center' m='auto'>
           <Box fontSize='40px'>
             <i className='fa-solid fa-compass'></i>
           </Box>
@@ -55,7 +55,7 @@ const Index = ({ consultations }) => {
       {context.isMember ? (
         <AllConsultations consultationsOnLoad={JSON.parse(consultations)} />
       ) : accountValidated ? (
-        <Flex direction='column' alignItems='center' m='auto' color='white'>
+        <Flex direction='column' alignItems='center' m='auto'>
           <Box fontSize='40px'>
             <i className='fa-solid fa-lock'></i>
           </Box>
@@ -65,7 +65,7 @@ const Index = ({ consultations }) => {
         </Flex>
       ) : (
         context.signerAddress && (
-          <Flex direction='column' alignItems='center' m='auto' color='white'>
+          <Flex direction='column' alignItems='center' m='auto'>
             <Box fontSize='40px'>
               <Spinner color='red' />
             </Box>

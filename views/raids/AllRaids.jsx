@@ -174,10 +174,11 @@ export const AllRaids = ({ raidsOnLoad }) => {
                     justifyContent='space-between'
                     border='2px solid'
                     borderColor='blackLight'
-                    color='white'
+                    color='blackLight'
                     cursor='pointer'
                     _hover={{
-                      backgroundColor: 'blackLight'
+                      backgroundColor: 'blackLight',
+                      color: 'white'
                     }}
                     my='5px'
                   >

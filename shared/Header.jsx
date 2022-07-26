@@ -41,7 +41,7 @@ export const Header = () => {
       w='100%'
       alignItems='center'
       justifyContent='space-between'
-      bg='blackLight'
+      // bg='blackLight'
       px='2rem'
     >
       <Link href='/' passHref>
@@ -70,9 +70,6 @@ export const Header = () => {
               <Button
                 h='auto'
                 fontWeight='normal'
-                border='2px solid'
-                borderColor='red'
-                bg='blackDark'
                 _hover={{ opacity: '0.8' }}
                 p={{ base: 0, md: 3 }}
               >
