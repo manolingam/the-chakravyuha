@@ -30,10 +30,10 @@ export const CONSULTATION_QUERY = gql`
       submission_type
       raid {
         _id
-        invoice_address
         cleric {
           _id
           name
+          eth_address
         }
       }
     }
@@ -54,6 +54,27 @@ export const RAID_QUERY = gql`
     raid(_id: $id) {
       _id
       raid_name
+      status
+      category
+      cleric {
+        _id
+        name
+        eth_address
+      }
+      roles_required
+      raid_party {
+        members {
+          _id
+          name
+          eth_address
+        }
+      }
+      invoice_address
+      consultation {
+        _id
+        project_desc
+        services_req
+      }
     }
   }
 `;
@@ -79,9 +100,13 @@ export const MEMBER_BY_ID_QUERY = gql`
       guild_class
       primary_skills
       is_raiding
-      application {
+      championed_by {
         _id
         name
+        eth_address
+      }
+      application {
+        _id
         introduction
       }
     }
@@ -115,6 +140,11 @@ export const APPLICATION_QUERY = gql`
       _id
       name
       introduction
+      email_address
+      discord_handle
+      eth_address
+      primary_skills
+      skill_type
     }
   }
 `;

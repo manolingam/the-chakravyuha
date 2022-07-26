@@ -1,36 +1,28 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Flex, Box, Text, Spinner } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
-import { ObjectId } from 'mongodb';
 
 import { AppContext } from '../../context/AppContext';
-import { connectToDatabase } from '../../utils/mongo';
 import { validateMembership } from '../../utils/web3';
 import { Raid } from '../../views/raids/Raid';
 import { Page404 } from '../../shared/404';
 
+import { getRaid } from '../../utils/requests';
+
 export async function getServerSideProps(context) {
-  try {
-    const { db } = await connectToDatabase();
-    const raid = await db
-      .collection('raids')
-      .find({ _id: ObjectId(context.params.id) })
-      .toArray();
-    return {
-      props: {
-        raid: JSON.stringify(raid)
-      }
-    };
-  } catch (e) {
-    return {
-      props: {
-        raid: []
-      }
-    };
-  }
+  return {
+    props: {
+      raidId: context.params.id
+    }
+  };
 }
 
-const RaidPage = ({ raid }) => {
+const RaidPage = ({ raidId }) => {
   const context = useContext(AppContext);
+
+  const [raidRecord, setRaidRecord] = useState(null);
+
+  const [recordValidated, setRecordValidated] = useState(false);
   const [accountValidated, setAccountValidated] = useState(false);
 
   const checkMembership = async () => {
@@ -39,59 +31,64 @@ const RaidPage = ({ raid }) => {
     setAccountValidated(true);
   };
 
+  const fetchRaidRecord = async () => {
+    const _raidRecord = await getRaid(raidId);
+    setRaidRecord(_raidRecord);
+    setRecordValidated(true);
+  };
+
   useEffect(() => {
     context.signerAddress && checkMembership();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [context.signerAddress]);
+    context.isMember && fetchRaidRecord();
+  }, [context.signerAddress, context.isMember]);
 
   return (
     <>
-      {raid.length > 0 ? (
-        <Flex w='80%'>
-          {!context.signerAddress && (
-            <Flex direction='column' alignItems='center' m='auto' color='white'>
-              <Box fontSize='40px'>
-                <i className='fa-solid fa-compass'></i>
-              </Box>
-              <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
-                Connect your wallet to enable more portals (RaidGuild Membership
-                Required).
-              </Text>
-            </Flex>
-          )}
+      <Flex w='80%'>
+        {!context.signerAddress && (
+          <Flex direction='column' alignItems='center' m='auto'>
+            <Box fontSize='40px'>
+              <i className='fa-solid fa-compass'></i>
+            </Box>
+            <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
+              Connect your wallet to enable more portals (RaidGuild Membership
+              Required).
+            </Text>
+          </Flex>
+        )}
 
-          {context.isMember ? (
-            <Raid raid={JSON.parse(raid)} />
-          ) : accountValidated ? (
-            <Flex direction='column' alignItems='center' m='auto' color='white'>
-              <Box fontSize='40px'>
-                <i className='fa-solid fa-lock'></i>
-              </Box>
-              <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
-                You are not a member
-              </Text>
-            </Flex>
-          ) : (
-            context.signerAddress && (
-              <Flex
-                direction='column'
-                alignItems='center'
-                m='auto'
-                color='white'
-              >
+        {context.signerAddress && !accountValidated && (
+          <Flex direction='column' alignItems='center' m='auto'>
+            <Box fontSize='40px'>
+              <Spinner color='red' />
+            </Box>
+            <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
+              Validating your account type..
+            </Text>
+          </Flex>
+        )}
+
+        {accountValidated && (
+          <>
+            {!context.isMember && (
+              <Flex direction='column' alignItems='center' m='auto'>
                 <Box fontSize='40px'>
-                  <Spinner color='red' />
+                  <i className='fa-solid fa-lock'></i>
                 </Box>
                 <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
-                  Validating your account type..
+                  You are not a member
                 </Text>
               </Flex>
-            )
-          )}
-        </Flex>
-      ) : (
-        <Page404 />
-      )}
+            )}
+            {context.isMember && (
+              <>
+                {recordValidated && raidRecord && <Raid raid={raidRecord} />}
+                {recordValidated && !raidRecord && <Page404 />}
+              </>
+            )}
+          </>
+        )}
+      </Flex>
     </>
   );
 };

@@ -73,7 +73,7 @@ export const AllApplications = ({ applicationsOnLoad }) => {
       <SimpleGrid columns='1' w='100%' my='2rem'>
         {currentRecords.map((record, index) => {
           return (
-            <Link key={index} href={`/members/${record._id}`} passHref>
+            <Link key={index} href={`/applications/${record._id}`} passHref>
               <Flex
                 direction='row'
                 p='1rem'
@@ -153,7 +153,7 @@ export const AllApplications = ({ applicationsOnLoad }) => {
       )}
 
       {totalPages > 0 && (
-        <Text fontFamily='spaceMono' color='white' mt='2rem'>
+        <Text fontFamily='spaceMono' mt='2rem'>
           Page {currentPage} of {totalPages}
         </Text>
       )}

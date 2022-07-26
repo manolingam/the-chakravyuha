@@ -10,22 +10,24 @@ import {
   UnorderedList,
   ListItem,
   Button,
-  Textarea,
+  Tooltip,
   Image,
-  SimpleGrid
+  SimpleGrid,
+  Textarea
 } from '@chakra-ui/react';
-import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import styled from '@emotion/styled';
 import Link from 'next/link';
 
 import { getProfile } from '../../utils/3Box';
+
 import { theme } from '../../styles/theme';
 
 const StyledGrid = styled(Grid)`
   width: 100%;
   height: 100%;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: repeat(1, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   font-family: ${theme.fonts.spaceMono};
   margin-bottom: 2rem;
   grid-gap: 1rem;
@@ -74,41 +76,40 @@ const StyledDescriptionText = styled(Textarea)`
   border: 2px solid ${theme.colors.red};
 `;
 
-export const Raid = ({ raid }) => {
-  const [clericBoxProfileImage, setClericBoxProfileImage] = useState(null);
+const getAccountString = (account) => {
+  const len = account.length;
+  return `0x${account.substr(2, 3).toUpperCase()}...${account
+    .substr(len - 3, len - 1)
+    .toUpperCase()}`;
+};
+
+export const Application = ({ application }) => {
+  const [boxProfile, setBoxProfile] = useState(null);
   const {
-    _id,
-    raid_name,
-    status,
-    category,
-    cleric,
-    roles_required,
-    raid_party,
-    invoice_address,
-    consultation
-  } = raid;
+    name,
+    introduction,
+    email_address,
+    discord_handle,
+    eth_address,
+    primary_skills,
+    skill_type
+  } = application;
 
-  const getBoxProfile = async (eth_address) => {
-    const profile = await getProfile(eth_address);
-    return profile.imageUrl;
-  };
+  //   const getBoxProfile = async () => {
+  //     const profile = await getProfile(raid.cleric.eth_address);
+  //     setBoxProfile(profile);
+  //   };
 
-  useEffect(() => {
-    if (cleric && cleric.eth_address) {
-      getBoxProfile(cleric.eth_address)
-        .then((image) => {
-          setClericBoxProfileImage(image);
-        })
-        .catch((err) => {
-          console.log(err);
-        });
-    }
-  }, []);
+  //   useEffect(() => {
+  //     if (raid && raid.cleric && raid.cleric.eth_address) {
+  //       getBoxProfile();
+  //     }
+  //   }, []);
 
   return (
     <StyledGrid>
       <GridItem colSpan={4} rowSpan={1} bg='blackLight'>
-        <StyledCardTitle>Raid Info</StyledCardTitle>
+        <StyledCardTitle>Applicant Info</StyledCardTitle>
         <VStack alignItems='flex-start' p='2rem'>
           <Flex
             direction='column'
@@ -117,17 +118,22 @@ export const Raid = ({ raid }) => {
             mb='.5rem'
           >
             <Text color='red' fontWeight='bold' mb='5px' fontSize='xl'>
-              {raid_name}
+              {name}
             </Text>
+
             <Flex direction='row'>
-              <StyledTag size='sm'>{category}</StyledTag>
+              <StyledTag size='sm'>{skill_type}</StyledTag>
+              <StyledTag size='sm'>{getAccountString(eth_address)}</StyledTag>
+              {discord_handle && (
+                <StyledTag size='sm'>{discord_handle}</StyledTag>
+              )}
+              {email_address && (
+                <StyledTag size='sm'>{email_address}</StyledTag>
+              )}
             </Flex>
           </Flex>
 
-          <StyledDescriptionText
-            value={consultation.project_desc}
-            fontSize='sm'
-          />
+          <StyledDescriptionText size='sm' value={introduction} />
 
           <Flex direction='column'>
             <Text
@@ -136,13 +142,13 @@ export const Raid = ({ raid }) => {
               fontFamily='spaceMono'
               color='purpleLight'
             >
-              Required Services
+              Primary Skills
             </Text>
             <UnorderedList>
-              {consultation.services_req.map((service, index) => {
+              {primary_skills.map((skill, index) => {
                 return (
                   <ListItem key={index} color='white' fontSize='sm'>
-                    {service}
+                    {skill}
                   </ListItem>
                 );
               })}
@@ -151,10 +157,12 @@ export const Raid = ({ raid }) => {
         </VStack>
       </GridItem>
 
+      <GridItem colSpan={4} rowSpan={1} bg='blackLight'></GridItem>
+
       <GridItem colSpan={4} rowSpan={1}>
         <StyledCardTitle>Mutations</StyledCardTitle>
-        <SimpleGrid columns={3}>
-          {!raid_party && status !== 'Shipped' && (
+        {/* <SimpleGrid columns={3}>
+          {raid && consultationStatus === 'pending' && (
             <VStack mt='1rem'>
               <Button
                 w='100%'
@@ -162,7 +170,26 @@ export const Raid = ({ raid }) => {
                   opacity: '0.8'
                 }}
               >
-                Add to RaidParty
+                <i className='fa-solid fa-circle-check'></i>
+                <Text ml='5px'>Complete</Text>
+              </Button>
+              <Text fontSize='xs' fontFamily='jetbrains'>
+                Already promoted to a raid. Please mark the consultation as
+                complete.
+              </Text>
+            </VStack>
+          )}
+
+          {!raid && bidStatus !== 'queued' && consultationStatus === 'pending' && (
+            <VStack mt='1rem'>
+              <Button
+                bg='black'
+                w='100%'
+                _hover={{
+                  opacity: '0.8'
+                }}
+              >
+                Promote
               </Button>
               <Button
                 w='100%'
@@ -170,40 +197,37 @@ export const Raid = ({ raid }) => {
                   opacity: '0.8'
                 }}
               >
-                Remove from RaidParty
+                Cancel
               </Button>
             </VStack>
           )}
-        </SimpleGrid>
+        </SimpleGrid> */}
       </GridItem>
 
       <GridItem colStart={5} rowStart={1} spacing='10px'>
-        <StyledStatusText>{`raid ${status}`}</StyledStatusText>
-        <StyledCardTitle textAlign='center'>Cleric</StyledCardTitle>
-        <VStack mb='1rem' p='.5rem'>
+        <StyledStatusText>not championed</StyledStatusText>
+        <StyledCardTitle textAlign='center'>Championed By</StyledCardTitle>
+        {/* <VStack mb='1rem' p='.5rem'>
           <Image
-            src={clericBoxProfileImage && clericBoxProfileImage}
-            w='50px'
+            src={boxProfile && boxProfile.imageUrl}
+            w='75px'
             borderRadius='50%'
             alt='profile image'
             fallbackSrc='/assets/logos/cleric.png'
             mt='10px'
           />
-          <Link href={`/members/${cleric && cleric._id}`} passHref>
-            <StyledLinkText>{cleric ? cleric.name : 'NaN'}</StyledLinkText>
+          <Link href={`/members/${raid.cleric && raid.cleric._id}`} passHref>
+            <StyledLinkText>
+              {raid && raid.cleric ? raid.cleric.name : 'NaN'}
+            </StyledLinkText>
           </Link>
         </VStack>
 
-        <StyledCardTitle>Raid Party</StyledCardTitle>
-        {!raid_party && <StyledLinkText>NaN</StyledLinkText>}
-        {raid_party &&
-          raid_party.members.map((member, index) => {
-            return (
-              <Link href={`/members/${member._id}`} passHref key={index}>
-                <StyledLinkText>{member.name}</StyledLinkText>
-              </Link>
-            );
-          })}
+        {raid && (
+          <Link href={`/raids/${raid._id}`} passHref>
+            <StyledLinkText>View Raid</StyledLinkText>
+          </Link>
+        )} */}
       </GridItem>
     </StyledGrid>
   );

@@ -9,7 +9,7 @@ export const Page404 = () => {
       justifyContent='center'
     >
       <Image src='/assets/illustrations/404.svg' alt='raid-banner' w='200px' />
-      <Heading fontFamily='spaceMono' color='white' mt='2rem'>
+      <Heading fontFamily='spaceMono' mt='2rem'>
         Page not found
       </Heading>
     </Flex>

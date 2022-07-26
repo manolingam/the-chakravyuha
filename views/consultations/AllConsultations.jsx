@@ -241,7 +241,7 @@ export const AllConsultations = ({ consultationsOnLoad }) => {
           )}
 
           {totalPages > 0 && (
-            <Text fontFamily='spaceMono' color='white' mt='2rem'>
+            <Text fontFamily='spaceMono' mt='2rem'>
               Page {currentPage} of {totalPages}
             </Text>
           )}

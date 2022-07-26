@@ -58,7 +58,9 @@ export const getRaids = async (filter, skip) => {
 
 export const getRaid = async (id) => {
   try {
-    const { raid } = await client.query({
+    const {
+      data: { raid }
+    } = await client.query({
       query: RAID_QUERY,
       variables: { id: `${id}` }
     });

@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
 import { validateMembership } from '../../utils/web3';
-import { SingleConsultation } from '../../views/Consultations/SingleConsultation';
+import { Consultation } from '../../views/Consultations/Consultation';
 import { Page404 } from '../../shared/404';
 
 import { getConsultation } from '../../utils/requests';
@@ -46,7 +46,7 @@ const ConsultationPage = ({ consultationId }) => {
     <>
       <Flex w='80%'>
         {!context.signerAddress && (
-          <Flex direction='column' alignItems='center' m='auto' color='white'>
+          <Flex direction='column' alignItems='center' m='auto'>
             <Box fontSize='40px'>
               <i className='fa-solid fa-compass'></i>
             </Box>
@@ -58,7 +58,7 @@ const ConsultationPage = ({ consultationId }) => {
         )}
 
         {context.signerAddress && !accountValidated && (
-          <Flex direction='column' alignItems='center' m='auto' color='white'>
+          <Flex direction='column' alignItems='center' m='auto'>
             <Box fontSize='40px'>
               <Spinner color='red' />
             </Box>
@@ -71,12 +71,7 @@ const ConsultationPage = ({ consultationId }) => {
         {accountValidated && (
           <>
             {!context.isMember && (
-              <Flex
-                direction='column'
-                alignItems='center'
-                m='auto'
-                color='white'
-              >
+              <Flex direction='column' alignItems='center' m='auto'>
                 <Box fontSize='40px'>
                   <i className='fa-solid fa-lock'></i>
                 </Box>
@@ -88,7 +83,7 @@ const ConsultationPage = ({ consultationId }) => {
             {context.isMember && (
               <>
                 {recordValidated && consultationRecord && (
-                  <SingleConsultation consultation={consultationRecord} />
+                  <Consultation consultation={consultationRecord} />
                 )}
                 {recordValidated && !consultationRecord && <Page404 />}
               </>

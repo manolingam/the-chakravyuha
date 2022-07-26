@@ -4,23 +4,23 @@ import { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
 import { validateMembership } from '../../utils/web3';
-import { Member } from '../../views/members/Member';
+import { Application } from '../../views/applications/Application';
 import { Page404 } from '../../shared/404';
 
-import { getMemberById } from '../../utils/requests';
+import { getApplication } from '../../utils/requests';
 
 export async function getServerSideProps(context) {
   return {
     props: {
-      memberId: context.params.id
+      applicationId: context.params.id
     }
   };
 }
 
-const RaidPage = ({ memberId }) => {
+const ApplicationPage = ({ applicationId }) => {
   const context = useContext(AppContext);
 
-  const [memberRecord, setMemberRecord] = useState(null);
+  const [applicationRecord, setApplicationRecord] = useState(null);
 
   const [recordValidated, setRecordValidated] = useState(false);
   const [accountValidated, setAccountValidated] = useState(false);
@@ -31,15 +31,15 @@ const RaidPage = ({ memberId }) => {
     setAccountValidated(true);
   };
 
-  const fetchMemberRecord = async () => {
-    const _memberRecord = await getMemberById(memberId);
-    setMemberRecord(_memberRecord);
+  const fetchApplicationRecord = async () => {
+    const _applicationRecord = await getApplication(applicationId);
+    setApplicationRecord(_applicationRecord);
     setRecordValidated(true);
   };
 
   useEffect(() => {
     context.signerAddress && checkMembership();
-    context.isMember && fetchMemberRecord();
+    context.isMember && fetchApplicationRecord();
   }, [context.signerAddress, context.isMember]);
 
   return (
@@ -82,10 +82,10 @@ const RaidPage = ({ memberId }) => {
             )}
             {context.isMember && (
               <>
-                {recordValidated && memberRecord && (
-                  <Member member={memberRecord} />
+                {recordValidated && applicationRecord && (
+                  <Application application={applicationRecord} />
                 )}
-                {recordValidated && !memberRecord && <Page404 />}
+                {recordValidated && !applicationRecord && <Page404 />}
               </>
             )}
           </>
@@ -95,4 +95,4 @@ const RaidPage = ({ memberId }) => {
   );
 };
 
-export default RaidPage;
+export default ApplicationPage;

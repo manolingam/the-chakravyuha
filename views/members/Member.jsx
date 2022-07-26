@@ -1,231 +1,209 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import {
   Flex,
+  Grid,
+  GridItem,
+  VStack,
   Text,
   Tag,
-  Divider,
   UnorderedList,
   ListItem,
   Button,
-  SimpleGrid,
-  Spinner,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  PopoverBody,
-  Textarea
+  Textarea,
+  Image,
+  SimpleGrid
 } from '@chakra-ui/react';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
+import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 
-import { getApplicationById } from '../../utils/requests';
+import { getProfile } from '../../utils/3Box';
+import { theme } from '../../styles/theme';
+
+const StyledGrid = styled(Grid)`
+  width: 100%;
+  height: 100%;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(1, 1fr);
+  font-family: ${theme.fonts.spaceMono};
+  margin-bottom: 2rem;
+  grid-gap: 1rem;
+`;
+
+const StyledCardTitle = styled(Text)`
+  font-family: ${theme.fonts.rubik};
+  background-color: ${theme.colors.red};
+  color: ${theme.colors.black};
+  padding: 1rem;
+`;
+
+const StyledStatusText = styled(Text)`
+  color: white;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-align: center;
+  background-color: ${theme.colors.purple};
+  padding: 10px;
+  margin-bottom: 1rem;
+`;
+
+const StyledTag = styled(Tag)`
+  margin-right: 5px;
+  background-color: ${theme.colors.blackDark};
+  color: ${theme.colors.white};
+  font-weight: bold;
+`;
+
+const StyledLinkText = styled(Text)`
+  width: 100%;
+  text-align: center;
+  font-weight: bold;
+  color: ${theme.colors.red};
+  text-decoration: underline;
+  cursor: pointer;
+  text-transform: uppercase;
+  margin-top: 10px;
+`;
+
+const StyledDescriptionText = styled(Textarea)`
+  width: 100%;
+  min-height: 200px;
+  color: white;
+  border: none;
+  border: 2px solid ${theme.colors.red};
+`;
+
+const getAccountString = (account) => {
+  const len = account.length;
+  return `0x${account.substr(2, 3).toUpperCase()}...${account
+    .substr(len - 3, len - 1)
+    .toUpperCase()}`;
+};
 
 export const Member = ({ member }) => {
-  const router = useRouter();
-  const formattedMember = member[0];
+  const [championBoxProfileImage, setChampionBoxProfileImage] = useState(null);
+  const {
+    name,
+    email_address,
+    discord_handle,
+    eth_address,
+    guild_class,
+    primary_skills,
+    is_raiding,
+    championed_by,
+    application
+  } = member;
 
-  const [application, setApplication] = useState(null);
-
-  const fetchApplication = async () => {
-    const { application } = await getApplicationById(
-      formattedMember.application
-    );
-    setApplication(application[0]);
+  const getBoxProfile = async (eth_address) => {
+    const profile = await getProfile(eth_address);
+    return profile.imageUrl;
   };
 
   useEffect(() => {
-    fetchApplication();
+    if (championed_by && championed_by.eth_address) {
+      getBoxProfile(championed_by.eth_address)
+        .then((image) => {
+          setChampionBoxProfileImage(image);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, []);
 
   return (
-    <Flex
-      direction='row'
-      w='100%'
-      minH='250px'
-      alignItems='center'
-      justifyContent='center'
-      fontFamily='spaceMono'
-      border='2px solid'
-      borderColor='blackLight'
-      p='2rem'
-      my='2rem'
-    >
-      {!application && <Spinner color='red' />}
-
-      {application && (
-        <>
-          <Flex direction='column' h='100%' w='75%'>
-            <Flex
-              direction='row'
-              w='100%'
-              justifyContent='space-between'
-              alignItems='center'
-              mb='1rem'
-            >
-              <Flex
-                direction='column'
-                alignItems='baseline'
-                justifyContent='center'
-              >
-                <Text
-                  fontFamily='jetbrains'
-                  color='greyLight'
-                  fontWeight='bold'
-                  fontSize='sm'
-                >
-                  {formattedMember.is_raiding ? 'Raiding' : 'Not raiding'}
-                </Text>
-                <Link
-                  href={`/applications/${formattedMember.application}`}
-                  passHref
-                >
-                  <Text
-                    color='red'
-                    fontFamily='rubik'
-                    textDecoration='underline'
-                    cursor='pointer'
-                  >
-                    {formattedMember.name} <i className='fa-solid fa-link'></i>
-                  </Text>
-                </Link>
-              </Flex>
-              <Flex>
-                {formattedMember.email_address && (
-                  <Popover>
-                    <PopoverTrigger>
-                      <Tag
-                        fontFamily='jetbrains'
-                        bg='purple'
-                        fontWeight='bold'
-                        fontSize='sm'
-                        color='white'
-                        mr='1rem'
-                        cursor='pointer'
-                        _hover={{ opacity: '0.8' }}
-                      >
-                        <i className='fa-solid fa-envelope'></i>
-                      </Tag>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <PopoverBody>{formattedMember.email_address}</PopoverBody>
-                    </PopoverContent>
-                  </Popover>
-                )}
-                {formattedMember.discord_handle && (
-                  <Popover>
-                    <PopoverTrigger>
-                      <Tag
-                        fontFamily='jetbrains'
-                        bg='purple'
-                        fontWeight='bold'
-                        fontSize='sm'
-                        color='white'
-                        mr='1rem'
-                        cursor='pointer'
-                        _hover={{ opacity: '0.8' }}
-                      >
-                        <i className='fa-brands fa-discord'></i>
-                      </Tag>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <PopoverBody>
-                        {formattedMember.discord_handle}
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Popover>
-                )}
-                {formattedMember.telegram_handle && (
-                  <Popover>
-                    <PopoverTrigger>
-                      <Tag
-                        fontFamily='jetbrains'
-                        bg='purple'
-                        fontWeight='bold'
-                        fontSize='sm'
-                        color='white'
-                        mr='1rem'
-                        cursor='pointer'
-                        _hover={{ opacity: '0.8' }}
-                      >
-                        <i className='fa-brands fa-telegram'></i>
-                      </Tag>
-                    </PopoverTrigger>
-                    <PopoverContent>
-                      <PopoverBody>
-                        {formattedMember.telegram_handle}
-                      </PopoverBody>
-                    </PopoverContent>
-                  </Popover>
-                )}
-              </Flex>
-            </Flex>
-
-            <Flex direction='column' color='white'>
-              <Textarea
-                value={application.introduction}
-                bg='blackLight'
-                border='none'
-                minH='100px'
-              />
-            </Flex>
-          </Flex>
-
+    <StyledGrid>
+      <GridItem colSpan={4} rowSpan={1} bg='blackLight'>
+        <StyledCardTitle>Member Info</StyledCardTitle>
+        <VStack alignItems='flex-start' p='2rem'>
           <Flex
-            h='100%'
-            w='25%'
             direction='column'
+            justifyContent='space-between'
             alignItems='flex-start'
-            spacing='10px'
-            ml='2rem'
+            mb='.5rem'
           >
-            <Text color='red' fontWeight='bold' mx='auto'>
-              {formattedMember.guild_class}
+            <Text color='red' fontWeight='bold' mb='5px' fontSize='xl'>
+              {name}
             </Text>
-
-            <Divider my='1rem' />
-
-            <Flex w='100%' direction='column'>
-              <Text my='1rem' fontFamily='spaceMono' color='purpleLight'>
-                Primary Skills
-              </Text>
-              <UnorderedList>
-                {formattedMember.primary_skills.map((skill, index) => {
-                  return (
-                    <ListItem key={index} color='white' fontSize='sm'>
-                      {skill}
-                    </ListItem>
-                  );
-                })}
-              </UnorderedList>
-
-              <Button bg='red' w='100%' mt='1rem' isDisabled>
-                <i className='fa-solid fa-ban'></i>
-                <Text ml='5px'>Update Roles</Text>
-              </Button>
+            <Flex direction='row'>
+              <StyledTag size='sm'>{guild_class}</StyledTag>
+              <StyledTag size='sm'>{getAccountString(eth_address)}</StyledTag>
+              {discord_handle && (
+                <StyledTag size='sm'>{discord_handle}</StyledTag>
+              )}
+              {email_address && (
+                <StyledTag size='sm'>{email_address}</StyledTag>
+              )}
             </Flex>
-
-            {/* {formattedRaid.status === 'Shipped' && (
-                <Button bg='red' w='100%' mb='1rem' isDisabled>
-                  <i className='fa-solid fa-ban'></i>
-                  <Text ml='5px'>Shipped</Text>
-                </Button>
-              )}
-              {formattedRaid.status === 'Lost' && (
-                <Button bg='red' w='100%' mb='1rem' isDisabled>
-                  <i className='fa-solid fa-ban'></i>
-                  <Text ml='5px'>Lost</Text>
-                </Button>
-              )}
-              {formattedRaid.status === 'Raiding' && (
-                <Button bg='red' w='100%' mb='1rem' isDisabled>
-                  <i className='fa-solid fa-ban'></i>
-                  <Text ml='5px'>Raiding</Text>
-                </Button>
-              )} */}
           </Flex>
-        </>
-      )}
-    </Flex>
+
+          <StyledDescriptionText
+            value={application.introduction}
+            fontSize='sm'
+          />
+
+          <Flex direction='column'>
+            <Text
+              mt='2rem'
+              mb='.5rem'
+              fontFamily='spaceMono'
+              color='purpleLight'
+            >
+              Primary Skills
+            </Text>
+            <UnorderedList>
+              {primary_skills.map((skill, index) => {
+                return (
+                  <ListItem key={index} color='white' fontSize='sm'>
+                    {skill}
+                  </ListItem>
+                );
+              })}
+            </UnorderedList>
+          </Flex>
+        </VStack>
+      </GridItem>
+
+      <GridItem colSpan={4} rowSpan={1}>
+        <StyledCardTitle>Mutations</StyledCardTitle>
+        <SimpleGrid columns={3}></SimpleGrid>
+      </GridItem>
+
+      <GridItem colStart={5} rowStart={1} spacing='10px'>
+        <StyledStatusText>
+          {is_raiding ? 'raiding' : 'not raiding'}
+        </StyledStatusText>
+        <StyledCardTitle textAlign='center'>Championed By</StyledCardTitle>
+        <VStack mb='1rem' p='.5rem'>
+          <Image
+            src={championBoxProfileImage && championBoxProfileImage}
+            w='50px'
+            borderRadius='50%'
+            alt='profile image'
+            fallbackSrc='/assets/logos/cleric.png'
+            mt='10px'
+          />
+          <Link
+            href={`/members/${championed_by && championed_by._id}`}
+            passHref
+          >
+            <StyledLinkText>
+              {championed_by ? championed_by.name : 'NaN'}
+            </StyledLinkText>
+          </Link>
+        </VStack>
+
+        {/* <StyledCardTitle>Championed For</StyledCardTitle>
+        {!raid_party && <StyledLinkText>NaN</StyledLinkText>}
+        {raid_party &&
+          raid_party.members.map((member, index) => {
+            return (
+              <Link href={`/members/${member._id}`} passHref key={index}>
+                <StyledLinkText>{member.name}</StyledLinkText>
+              </Link>
+            );
+          })} */}
+      </GridItem>
+    </StyledGrid>
   );
 };

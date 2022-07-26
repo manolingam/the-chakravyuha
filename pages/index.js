@@ -118,68 +118,79 @@ export default function Home() {
         </Flex>
       )}
 
-      <Flex
-        direction='column'
+      <SimpleGrid
+        columns='2'
+        gridGap='1rem'
         fontFamily='spaceMono'
         fontSize='18px'
-        alignItems='center'
-        justifyContent='space-between'
         px='1rem'
         h='300px'
       >
         <Button
           w='100%'
-          justifyContent='flex-start'
+          h='100%'
+          justifyContent='center'
           isDisabled={!context.isMember}
           bg={context.isMember ? 'red' : 'greyLight'}
           onClick={() => router.push('/applications')}
           textTransform='uppercase'
         >
-          <Box mr='1rem'>
-            <i className='fa-solid fa-dungeon'></i>
-          </Box>
-          To the applications
+          <Flex direction='column'>
+            <Box fontSize='2rem' mb='5px'>
+              <i className='fa-solid fa-dungeon'></i>
+            </Box>
+            <Text>applications</Text>
+          </Flex>
         </Button>
         <Button
           w='100%'
-          justifyContent='flex-start'
+          h='100%'
+          justifyContent='center'
           isDisabled={!context.isMember}
           bg={context.isMember ? 'red' : 'greyLight'}
           onClick={() => router.push('/consultations')}
           textTransform='uppercase'
         >
-          <Box mr='1rem'>
-            <i className='fa-solid fa-dungeon'></i>
-          </Box>
-          To the consultations
+          <Flex direction='column'>
+            <Box fontSize='2rem' mb='5px'>
+              <i className='fa-solid fa-dungeon'></i>
+            </Box>
+            <Text>consultations</Text>
+          </Flex>
         </Button>
         <Button
           w='100%'
-          justifyContent='flex-start'
+          h='100%'
+          justifyContent='center'
           isDisabled={!context.isMember}
           bg={context.isMember ? 'red' : 'greyLight'}
           onClick={() => router.push('/raids')}
           textTransform='uppercase'
         >
-          <Box mr='1rem'>
-            <i className='fa-solid fa-dungeon'></i>
-          </Box>
-          To the raids
+          <Flex direction='column'>
+            <Box fontSize='2rem' mb='5px'>
+              <i className='fa-solid fa-dungeon'></i>
+            </Box>
+            <Text>raids</Text>
+          </Flex>
         </Button>
         <Button
           w='100%'
-          justifyContent='flex-start'
+          h='100%'
+          justifyContent='center'
           isDisabled={!context.isMember}
           bg={context.isMember ? 'red' : 'greyLight'}
           onClick={() => router.push('/members')}
           textTransform='uppercase'
         >
-          <Box mr='1rem'>
-            <i className='fa-solid fa-dungeon'></i>
-          </Box>
-          To the members
+          <Flex direction='column'>
+            <Box fontSize='2rem' mb='5px'>
+              <i className='fa-solid fa-dungeon'></i>
+            </Box>
+            <Text>members</Text>
+          </Flex>
         </Button>
-      </Flex>
+      </SimpleGrid>
     </SimpleGrid>
   );
 }
