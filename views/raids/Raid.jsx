@@ -12,14 +12,21 @@ import {
   Button,
   Textarea,
   Image,
-  SimpleGrid
+  SimpleGrid,
+  FormControl,
+  FormLabel,
+  Checkbox,
+  CheckboxGroup,
+  Stack
 } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import { getProfile } from '../../utils/3Box';
 import { theme } from '../../styles/theme';
+import { GUILD_CLASS } from '../../utils/constants';
 
 const StyledGrid = styled(Grid)`
   width: 100%;
@@ -32,6 +39,13 @@ const StyledGrid = styled(Grid)`
 `;
 
 const StyledCardTitle = styled(Text)`
+  font-family: ${theme.fonts.rubik};
+  background-color: ${theme.colors.red};
+  color: ${theme.colors.black};
+  padding: 1rem;
+`;
+
+const StyledFormLabel = styled(FormLabel)`
   font-family: ${theme.fonts.rubik};
   background-color: ${theme.colors.red};
   color: ${theme.colors.black};
@@ -75,14 +89,15 @@ const StyledDescriptionText = styled(Textarea)`
 `;
 
 export const Raid = ({ raid }) => {
+  const router = useRouter();
   const [clericBoxProfileImage, setClericBoxProfileImage] = useState(null);
+  const [requiredRoles, setRequiredRoles] = useState(raid.roles_required);
   const {
     _id,
     raid_name,
     status,
     category,
     cleric,
-    roles_required,
     raid_party,
     invoice_address,
     consultation
@@ -107,7 +122,7 @@ export const Raid = ({ raid }) => {
 
   return (
     <StyledGrid>
-      <GridItem colSpan={4} rowSpan={1} bg='blackLight'>
+      <GridItem colSpan={5} rowSpan={1} bg='blackLight'>
         <StyledCardTitle>Raid Info</StyledCardTitle>
         <VStack alignItems='flex-start' p='2rem'>
           <Flex
@@ -151,34 +166,19 @@ export const Raid = ({ raid }) => {
         </VStack>
       </GridItem>
 
-      <GridItem colSpan={4} rowSpan={1}>
-        <StyledCardTitle>Mutations</StyledCardTitle>
-        <SimpleGrid columns={3}>
-          {!raid_party && status !== 'Shipped' && (
-            <VStack mt='1rem'>
-              <Button
-                w='100%'
-                _hover={{
-                  opacity: '0.8'
-                }}
-              >
-                Add to RaidParty
-              </Button>
-              <Button
-                w='100%'
-                _hover={{
-                  opacity: '0.8'
-                }}
-              >
-                Remove from RaidParty
-              </Button>
-            </VStack>
-          )}
-        </SimpleGrid>
-      </GridItem>
-
-      <GridItem colStart={5} rowStart={1} spacing='10px'>
+      <GridItem colSpan={2}>
         <StyledStatusText>{`raid ${status}`}</StyledStatusText>
+        <Button
+          mb='2rem'
+          w='100%'
+          _hover={{
+            opacity: '0.8'
+          }}
+          disabled={!invoice_address}
+          onClick={() => router.push(invoice_address && `/escrow/${raid._id}`)}
+        >
+          View Invoice
+        </Button>
         <StyledCardTitle textAlign='center'>Cleric</StyledCardTitle>
         <VStack mb='1rem' p='.5rem'>
           <Image
@@ -189,13 +189,21 @@ export const Raid = ({ raid }) => {
             fallbackSrc='/assets/logos/cleric.png'
             mt='10px'
           />
-          <Link href={`/members/${cleric && cleric._id}`} passHref>
-            <StyledLinkText>{cleric ? cleric.name : 'NaN'}</StyledLinkText>
-          </Link>
+          {!cleric ? (
+            <Text>Not Found</Text>
+          ) : (
+            <Link href={`/members/${cleric && cleric._id}`} passHref>
+              <StyledLinkText>{cleric.name}</StyledLinkText>
+            </Link>
+          )}
         </VStack>
 
-        <StyledCardTitle>Raid Party</StyledCardTitle>
-        {!raid_party && <StyledLinkText>NaN</StyledLinkText>}
+        <StyledCardTitle textAlign='center'>Raid Party</StyledCardTitle>
+        {!raid_party && (
+          <Text textAlign='center' p='1rem'>
+            Not Found
+          </Text>
+        )}
         {raid_party &&
           raid_party.members.map((member, index) => {
             return (
@@ -204,6 +212,63 @@ export const Raid = ({ raid }) => {
               </Link>
             );
           })}
+        {!raid_party && status !== 'Shipped' && (
+          <VStack mt='1rem'>
+            <Button
+              w='100%'
+              _hover={{
+                opacity: '0.8'
+              }}
+            >
+              Add
+            </Button>
+            <Button
+              w='100%'
+              _hover={{
+                opacity: '0.8'
+              }}
+            >
+              Remove
+            </Button>
+          </VStack>
+        )}
+      </GridItem>
+
+      <GridItem colSpan={3}>
+        <FormControl fontFamily='spaceMono'>
+          <StyledFormLabel mb={5}>Required Roles</StyledFormLabel>
+          <CheckboxGroup
+            color='red'
+            onChange={(e) => setRequiredRoles(e)}
+            value={requiredRoles}
+          >
+            <Stack direction='column' maxH='350px' overflowY='scroll'>
+              {GUILD_CLASS.map((value, index) => {
+                return (
+                  <Checkbox
+                    key={index}
+                    value={value}
+                    color='red'
+                    fontFamily='jetbrains'
+                    size='sm'
+                  >
+                    {value}
+                  </Checkbox>
+                );
+              })}
+            </Stack>
+          </CheckboxGroup>
+        </FormControl>
+        <Button
+          w='100%'
+          _hover={{
+            opacity: '0.8'
+          }}
+          mt='1rem'
+          disabled={status === 'Shipped' || status === 'Cancelled'}
+        >
+          Update
+        </Button>
       </GridItem>
     </StyledGrid>
   );

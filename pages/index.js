@@ -8,41 +8,14 @@ import {
   Spinner,
   Image
 } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { useRouter } from 'next/router';
 
 import { AppContext } from '../context/AppContext';
-import { validateMembership } from '../utils/web3';
-import { getMemberByAddress } from '../utils/requests';
-import { getProfile } from '../utils/3Box';
 
 export default function Home() {
   const context = useContext(AppContext);
   const router = useRouter();
-  const [accountValidated, setAccountValidated] = useState(false);
-  const [boxProfile, setBoxProfile] = useState(null);
-
-  const checkMembership = async () => {
-    const isMember = await validateMembership(context.signerAddress);
-    context.setWeb3Data({ isMember });
-    if (isMember) {
-      const profile = await getProfile(context.signerAddress);
-      setBoxProfile(profile);
-    }
-  };
-
-  const getMemberProfile = async () => {
-    const member = await getMemberByAddress(context.signerAddress);
-    context.setWeb3Data({ member });
-    setAccountValidated(true);
-  };
-
-  useEffect(() => {
-    if (context.signerAddress) {
-      checkMembership();
-      getMemberProfile();
-    }
-  }, [context.signerAddress]);
 
   return (
     <SimpleGrid
@@ -63,7 +36,7 @@ export default function Home() {
         </Flex>
       )}
 
-      {context.signerAddress && !accountValidated && (
+      {context.signerAddress && !context.profileValidated && (
         <Flex direction='column' alignItems='center' m='auto'>
           <Box fontSize='40px'>
             <Spinner color='red' />
@@ -74,13 +47,13 @@ export default function Home() {
         </Flex>
       )}
 
-      {accountValidated && (
+      {context.profileValidated && (
         <Flex direction='column' alignItems='center' m='auto'>
-          {context.member.name ? (
+          {context.member ? (
             <>
-              {boxProfile && (
+              {context.profileImage && (
                 <Image
-                  src={boxProfile.imageUrl}
+                  src={context.profileImage}
                   w='100px'
                   borderRadius='50%'
                   alt='profile image'

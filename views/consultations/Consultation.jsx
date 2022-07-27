@@ -18,6 +18,7 @@ import {
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 import { getQueuedBids } from '../../utils/requests';
 import { getProfile } from '../../utils/3Box';
@@ -78,6 +79,7 @@ const StyledDescriptionText = styled(Textarea)`
 `;
 
 export const Consultation = ({ consultation }) => {
+  const router = useRouter();
   const [bidStatus, setBidStatus] = useState(null);
   const [boxProfile, setBoxProfile] = useState(null);
   const {
@@ -223,7 +225,6 @@ export const Consultation = ({ consultation }) => {
 
           <StyledDescriptionText size='sm'>{contact_bio}</StyledDescriptionText>
 
-          <Divider />
           <Flex direction='column'>
             <Text
               mb='.5rem'
@@ -264,7 +265,6 @@ export const Consultation = ({ consultation }) => {
           {!raid && bidStatus !== 'queued' && consultationStatus === 'pending' && (
             <VStack mt='1rem'>
               <Button
-                bg='black'
                 w='100%'
                 _hover={{
                   opacity: '0.8'
@@ -297,18 +297,27 @@ export const Consultation = ({ consultation }) => {
             fallbackSrc='/assets/logos/cleric.png'
             mt='10px'
           />
-          <Link href={`/members/${raid.cleric && raid.cleric._id}`} passHref>
-            <StyledLinkText>
-              {raid && raid.cleric ? raid.cleric.name : 'NaN'}
-            </StyledLinkText>
-          </Link>
+          {!raid || !raid.cleric ? (
+            <Text>Not Found</Text>
+          ) : (
+            <Link href={`/members/${raid.cleric && raid.cleric._id}`} passHref>
+              <StyledLinkText>
+                {raid && raid.cleric ? raid.cleric.name : 'Not Found'}
+              </StyledLinkText>
+            </Link>
+          )}
         </VStack>
 
-        {raid && (
-          <Link href={`/raids/${raid._id}`} passHref>
-            <StyledLinkText>View Raid</StyledLinkText>
-          </Link>
-        )}
+        <Button
+          w='100%'
+          _hover={{
+            opacity: '0.8'
+          }}
+          disabled={!raid}
+          onClick={() => router.push(raid && `/raids/${raid._id}`)}
+        >
+          View Raid
+        </Button>
       </GridItem>
     </StyledGrid>
   );

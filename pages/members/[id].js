@@ -3,7 +3,6 @@ import { Flex, Box, Text, Spinner } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
-import { validateMembership } from '../../utils/web3';
 import { Member } from '../../views/members/Member';
 import { Page404 } from '../../shared/404';
 
@@ -23,13 +22,6 @@ const RaidPage = ({ memberId }) => {
   const [memberRecord, setMemberRecord] = useState(null);
 
   const [recordValidated, setRecordValidated] = useState(false);
-  const [accountValidated, setAccountValidated] = useState(false);
-
-  const checkMembership = async () => {
-    const isMember = await validateMembership(context.signerAddress);
-    context.setWeb3Data({ isMember });
-    setAccountValidated(true);
-  };
 
   const fetchMemberRecord = async () => {
     const _memberRecord = await getMemberById(memberId);
@@ -38,9 +30,8 @@ const RaidPage = ({ memberId }) => {
   };
 
   useEffect(() => {
-    context.signerAddress && checkMembership();
     context.isMember && fetchMemberRecord();
-  }, [context.signerAddress, context.isMember]);
+  }, [context.isMember]);
 
   return (
     <>
@@ -57,7 +48,7 @@ const RaidPage = ({ memberId }) => {
           </Flex>
         )}
 
-        {context.signerAddress && !accountValidated && (
+        {context.signerAddress && !context.profileValidated && (
           <Flex direction='column' alignItems='center' m='auto'>
             <Box fontSize='40px'>
               <Spinner color='red' />
@@ -68,7 +59,7 @@ const RaidPage = ({ memberId }) => {
           </Flex>
         )}
 
-        {accountValidated && (
+        {context.profileValidated && (
           <>
             {!context.isMember && (
               <Flex direction='column' alignItems='center' m='auto'>

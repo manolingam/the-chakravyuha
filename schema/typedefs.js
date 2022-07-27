@@ -107,7 +107,7 @@ const typeDefs = gql`
     consultations(filter: String, skip: Int): [Consultation]
     raids(filter: String, skip: Int): [Raid]
     applications(skip: Int): [Application]
-    members(skip: Int): [Member]
+    members(member: String, skip: Int): [Member]
     raidparties(skip: Int): [RaidParty]
 
     consultation(_id: String): Consultation

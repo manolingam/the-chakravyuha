@@ -79,10 +79,14 @@ export const Header = () => {
               </Button>
             </PopoverTrigger>
             <PopoverContent bg='none' w='auto' border='none'>
-              {context.member && (
+              {context.member ? (
                 <Link href={`/members/${context.member._id}`} passHref>
                   <Button bg='red'>Profile</Button>
                 </Link>
+              ) : (
+                <Button bg='red' disabled>
+                  Profile not found
+                </Button>
               )}
               <Button
                 bg='red'

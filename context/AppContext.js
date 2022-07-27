@@ -8,7 +8,9 @@ class AppContextProvider extends Component {
     signerAddress: null,
     signature: null,
     isMember: false,
-    member: null
+    member: null,
+    profileImage: null,
+    profileValidated: false
   };
 
   setWeb3Data = (data) => {

@@ -84,6 +84,20 @@ export const getMembers = async (skip) => {
   }
 };
 
+export const getChampions = async (member) => {
+  try {
+    const {
+      data: { members }
+    } = await client.query({
+      query: MEMBERS_QUERY,
+      variables: { member: `${member}` }
+    });
+    return members;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 export const getMemberById = async (id) => {
   try {
     const {

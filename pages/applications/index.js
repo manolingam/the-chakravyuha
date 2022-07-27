@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
 
-import { validateMembership } from '../../utils/web3';
 import { AllApplications } from '../../views/applications/AllApplications';
 
 import connectMongo from '../../utils/mongoose';
@@ -22,18 +21,6 @@ export async function getServerSideProps(context) {
 
 const Index = ({ applications }) => {
   const context = useContext(AppContext);
-  const [accountValidated, setAccountValidated] = useState(false);
-
-  const checkMembership = async () => {
-    const isMember = await validateMembership(context.signerAddress);
-    context.setWeb3Data({ isMember });
-    setAccountValidated(true);
-  };
-
-  useEffect(() => {
-    context.signerAddress && checkMembership();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [context.signerAddress]);
 
   return (
     <Flex w='80%'>
@@ -51,7 +38,7 @@ const Index = ({ applications }) => {
 
       {context.isMember ? (
         <AllApplications applicationsOnLoad={JSON.parse(applications)} />
-      ) : accountValidated ? (
+      ) : context.profileValidated ? (
         <Flex direction='column' alignItems='center' m='auto'>
           <Box fontSize='40px'>
             <i className='fa-solid fa-lock'></i>

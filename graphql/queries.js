@@ -80,8 +80,8 @@ export const RAID_QUERY = gql`
 `;
 
 export const MEMBERS_QUERY = gql`
-  query Members($skip: Int) {
-    members(skip: $skip) {
+  query Members($member: String, $skip: Int) {
+    members(member: $member, skip: $skip) {
       _id
       name
     }

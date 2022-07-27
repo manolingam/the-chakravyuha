@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Flex, Box, Text, Spinner } from '@chakra-ui/react';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
-import { validateMembership } from '../../utils/web3';
 import { AllRaids } from '../../views/raids/AllRaids';
 
 import connectMongo from '../../utils/mongoose';
@@ -23,17 +23,6 @@ const Index = ({ raids }) => {
   const context = useContext(AppContext);
   const [accountValidated, setAccountValidated] = useState(false);
 
-  const checkMembership = async () => {
-    const isMember = await validateMembership(context.signerAddress);
-    context.setWeb3Data({ isMember });
-    setAccountValidated(true);
-  };
-
-  useEffect(() => {
-    context.signerAddress && checkMembership();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [context.signerAddress]);
-
   return (
     <Flex w='80%'>
       {!context.signerAddress && (
@@ -50,7 +39,7 @@ const Index = ({ raids }) => {
 
       {context.isMember ? (
         <AllRaids raidsOnLoad={JSON.parse(raids)} />
-      ) : accountValidated ? (
+      ) : context.profileValidated ? (
         <Flex direction='column' alignItems='center' m='auto'>
           <Box fontSize='40px'>
             <i className='fa-solid fa-lock'></i>

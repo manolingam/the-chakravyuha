@@ -1,4 +1,5 @@
-import { useContext } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useContext, useEffect } from 'react';
 import { ethers } from 'ethers';
 import Web3Modal from 'web3modal';
 import WalletConnectProvider from '@walletconnect/web3-provider';
@@ -7,6 +8,9 @@ import { AppContext } from '../context/AppContext';
 
 import { INFURA_ID } from '../config';
 import { SIGNATURE_MESSAGE } from '../utils/constants';
+import { getMemberByAddress } from '../utils/requests';
+import { validateMembership } from '../utils/web3';
+import { getProfile } from '../utils/3Box';
 
 const providerOptions = {
   walletconnect: {
@@ -21,6 +25,26 @@ let web3Modal;
 
 export const useWallet = () => {
   const context = useContext(AppContext);
+
+  useEffect(() => {
+    context.signerAddress && checkMembership();
+  }, [context.signerAddress]);
+
+  const getMemberProfile = async () => {
+    const member = await getMemberByAddress(context.signerAddress);
+    context.setWeb3Data({ member });
+  };
+
+  const checkMembership = async () => {
+    const isMember = await validateMembership(context.signerAddress);
+    context.setWeb3Data({ isMember: isMember ? true : false });
+    if (isMember) {
+      const profile = await getProfile(context.signerAddress);
+      context.setWeb3Data({ profileImage: profile ? profile.imageUrl : null });
+      getMemberProfile();
+    }
+    context.setWeb3Data({ profileValidated: true });
+  };
 
   const connectWallet = async () => {
     web3Modal = new Web3Modal({

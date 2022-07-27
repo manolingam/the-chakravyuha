@@ -36,11 +36,16 @@ const resolvers = {
       return response;
     },
 
-    async members(parent, { skip }) {
-      const response = await Member.find()
-        .populate('championed_by')
-        .populate('application')
-        .skip(skip);
+    async members(parent, { member, skip }) {
+      let response;
+      if (member) {
+        response = await Member.find({ championed_by: member });
+      } else {
+        response = await Member.find()
+          .populate('championed_by')
+          .populate('application')
+          .skip(skip);
+      }
       return response;
     },
 
