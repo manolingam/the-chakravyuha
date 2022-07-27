@@ -6,13 +6,11 @@ import {
   VStack,
   Text,
   Tag,
-  Divider,
   UnorderedList,
   ListItem,
   Button,
   Textarea,
   Image,
-  SimpleGrid,
   FormControl,
   FormLabel,
   Checkbox,
@@ -22,8 +20,8 @@ import {
 import styled from '@emotion/styled';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 
+import { InvoiceCard } from '../../shared/escrow/InvoiceCard';
 import { getProfile } from '../../utils/3Box';
 import { theme } from '../../styles/theme';
 import { GUILD_CLASS } from '../../utils/constants';
@@ -89,9 +87,9 @@ const StyledDescriptionText = styled(Textarea)`
 `;
 
 export const Raid = ({ raid }) => {
-  const router = useRouter();
   const [clericBoxProfileImage, setClericBoxProfileImage] = useState(null);
   const [requiredRoles, setRequiredRoles] = useState(raid.roles_required);
+
   const {
     _id,
     raid_name,
@@ -168,17 +166,6 @@ export const Raid = ({ raid }) => {
 
       <GridItem colSpan={2}>
         <StyledStatusText>{`raid ${status}`}</StyledStatusText>
-        <Button
-          mb='2rem'
-          w='100%'
-          _hover={{
-            opacity: '0.8'
-          }}
-          disabled={!invoice_address}
-          onClick={() => router.push(invoice_address && `/escrow/${raid._id}`)}
-        >
-          View Invoice
-        </Button>
         <StyledCardTitle textAlign='center'>Cleric</StyledCardTitle>
         <VStack mb='1rem' p='.5rem'>
           <Image
@@ -270,6 +257,12 @@ export const Raid = ({ raid }) => {
           Update
         </Button>
       </GridItem>
+
+      {invoice_address && (
+        <GridItem colSpan={5}>
+          <InvoiceCard invoice_address={invoice_address} />
+        </GridItem>
+      )}
     </StyledGrid>
   );
 };

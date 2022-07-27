@@ -32,7 +32,7 @@ export const useWallet = () => {
 
   const getMemberProfile = async () => {
     const member = await getMemberByAddress(context.signerAddress);
-    context.setWeb3Data({ member });
+    return member;
   };
 
   const checkMembership = async () => {
@@ -40,8 +40,12 @@ export const useWallet = () => {
     context.setWeb3Data({ isMember: isMember ? true : false });
     if (isMember) {
       const profile = await getProfile(context.signerAddress);
-      context.setWeb3Data({ profileImage: profile ? profile.imageUrl : null });
-      getMemberProfile();
+      const member = await getMemberProfile();
+      context.setWeb3Data({
+        profileImage: profile ? profile.imageUrl : null,
+        isMember: isMember ? true : false,
+        member
+      });
     }
     context.setWeb3Data({ profileValidated: true });
   };

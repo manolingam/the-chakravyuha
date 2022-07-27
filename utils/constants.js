@@ -12,6 +12,21 @@ export const IPFS_ENDPOINT = 'https://ipfs.infura.io';
 
 export const BOX_ENDPOINT = 'https://ipfs.3box.io';
 
+export const ESCROW_TOKEN_CONFIG = {
+  WRAPPED_NATIVE_TOKEN:
+    '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'.toLowerCase(),
+  TOKENS: {
+    WXDAI: {
+      decimals: 18,
+      address: '0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d'.toLowerCase()
+    },
+    WETH: {
+      decimals: 18,
+      address: '0x6A023CCd1ff6F2045C3309768eAd9E68F978f6e1'.toLowerCase()
+    }
+  }
+};
+
 export const SERVICES = [
   'DAO (Design, Deployment)',
   'Development (Frontend, Backend)',

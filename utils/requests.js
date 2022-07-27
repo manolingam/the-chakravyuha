@@ -9,16 +9,20 @@ import {
   MEMBER_BY_ADDRESS_QUERY,
   MEMBER_BY_ID_QUERY,
   RAIDPARTY_QUERY,
-  APPLICATION_QUERY
+  APPLICATION_QUERY,
+  INVOICE_QUERY
 } from '../graphql/queries';
 
-import client from '../graphql/client';
+import {
+  DATABASE_APOLLO_CLIENT,
+  ESCROW_APOLLO_CLIENT
+} from '../graphql/client';
 
 export const getConsultations = async (filter, skip) => {
   try {
     const {
       data: { consultations }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: CONSULTATIONS_QUERY,
       variables: { filter: filter, skip: skip }
     });
@@ -32,7 +36,7 @@ export const getConsultation = async (id) => {
   try {
     const {
       data: { consultation }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: CONSULTATION_QUERY,
       variables: { id: `${id}` }
     });
@@ -46,7 +50,7 @@ export const getRaids = async (filter, skip) => {
   try {
     const {
       data: { raids }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: RAIDS_QUERY,
       variables: { filter: filter, skip: skip }
     });
@@ -60,7 +64,7 @@ export const getRaid = async (id) => {
   try {
     const {
       data: { raid }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: RAID_QUERY,
       variables: { id: `${id}` }
     });
@@ -74,7 +78,7 @@ export const getMembers = async (skip) => {
   try {
     const {
       data: { members }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: MEMBERS_QUERY,
       variables: { skip: `${skip}` }
     });
@@ -88,7 +92,7 @@ export const getChampions = async (member) => {
   try {
     const {
       data: { members }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: MEMBERS_QUERY,
       variables: { member: `${member}` }
     });
@@ -102,7 +106,7 @@ export const getMemberById = async (id) => {
   try {
     const {
       data: { member }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: MEMBER_BY_ID_QUERY,
       variables: { id: `${id}` }
     });
@@ -116,7 +120,7 @@ export const getMemberByAddress = async (eth_address) => {
   try {
     const {
       data: { member }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: MEMBER_BY_ADDRESS_QUERY,
       variables: { eth_address: `${eth_address}` }
     });
@@ -130,7 +134,7 @@ export const getApplication = async (id) => {
   try {
     const {
       data: { application }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: APPLICATION_QUERY,
       variables: { id: `${id}` }
     });
@@ -144,11 +148,25 @@ export const getRaidParty = async (id) => {
   try {
     const {
       data: { raidparty }
-    } = await client.query({
+    } = await DATABASE_APOLLO_CLIENT.query({
       query: RAIDPARTY_QUERY,
       variables: { id: `${id}` }
     });
     return raidparty;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getInvoice = async (address) => {
+  try {
+    const {
+      data: { invoice }
+    } = await ESCROW_APOLLO_CLIENT.query({
+      query: INVOICE_QUERY,
+      variables: { address: `${address.toLowerCase()}` }
+    });
+    return invoice;
   } catch (e) {
     console.log(e);
   }
