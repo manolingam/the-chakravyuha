@@ -1,5 +1,6 @@
 import { ApolloServer } from 'apollo-server-micro';
 import { ApolloServerPluginLandingPageGraphQLPlayground } from 'apollo-server-core';
+import { verify } from 'jsonwebtoken';
 
 import typeDefs from '../../schema/typedefs';
 import resolvers from '../../schema/resolvers';
@@ -10,6 +11,16 @@ const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
   playground: true,
+  context: ({ req }) => {
+    const { authorization } = req.headers;
+    const token = authorization && authorization.split(' ')[1];
+    try {
+      verify(token, process.env.JWT_SECRET);
+      return;
+    } catch (e) {
+      throw Error('Unauthorized');
+    }
+  },
   plugins: [ApolloServerPluginLandingPageGraphQLPlayground]
 });
 

@@ -199,7 +199,7 @@ export const Raid = ({ raid }) => {
               </Link>
             );
           })}
-        {!raid_party && status !== 'Shipped' && (
+        {status !== 'Shipped' && (
           <VStack mt='1rem'>
             <Button
               w='100%'

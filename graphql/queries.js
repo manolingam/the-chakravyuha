@@ -145,6 +145,11 @@ export const APPLICATION_QUERY = gql`
       eth_address
       primary_skills
       skill_type
+      referred_by {
+        _id
+        name
+        eth_address
+      }
     }
   }
 `;

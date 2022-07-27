@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from 'react';
 import { Spinner, Text, VStack } from '@chakra-ui/react';
 import { providers } from 'ethers';

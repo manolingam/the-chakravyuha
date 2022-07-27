@@ -1,4 +1,4 @@
-import { HStack, Text, Tooltip } from '@chakra-ui/react';
+import { Box, HStack, Text, Tooltip } from '@chakra-ui/react';
 import styled from '@emotion/styled';
 
 import { theme } from '../../styles/theme';
@@ -12,7 +12,7 @@ const StyledCardTitle = styled(Text)`
 
 export const InvoiceMetaDetails = ({ invoice, raidPartyAddress }) => {
   return (
-    <>
+    <Box px='.5rem'>
       <HStack mb='.5rem' mt='2rem' justifyContent='space-between' fontSize='sm'>
         <Text fontWeight='bold' fontFamily='jetbrains'>
           Safety Valve Date:
@@ -45,6 +45,6 @@ export const InvoiceMetaDetails = ({ invoice, raidPartyAddress }) => {
         </Text>
         <Text>{invoice.resolver}</Text>
       </HStack>
-    </>
+    </Box>
   );
 };
