@@ -3,7 +3,7 @@ import { Flex, Box, Text, Spinner } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
-import { Consultation } from '../../views/Consultations/Consultation';
+import { Consultation } from '../../views/consultations/Consultation';
 import { Page404 } from '../../shared/404';
 
 import { getConsultation } from '../../utils/requests';

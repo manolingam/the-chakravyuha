@@ -2,7 +2,7 @@ import { Flex, Box, Text, Spinner } from '@chakra-ui/react';
 import { useContext } from 'react';
 
 import { AppContext } from '../../context/AppContext';
-import { AllConsultations } from '../../views/Consultations/AllConsultations';
+import { AllConsultations } from '../../views/consultations/AllConsultations';
 
 import connectMongo from '../../utils/mongoose';
 import Consultation from '../../models/consultation';
