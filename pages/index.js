@@ -88,11 +88,11 @@ export default function Home() {
               </Text>
             ) : (
               <>
-                <Box fontSize='40px' color='purple'>
+                <Box fontSize='40px' color='black'>
                   <i className='fa-solid fa-lock'></i>
                 </Box>
                 <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
-                  You are either not a member on chain.
+                  You are not a member onchain.
                 </Text>
               </>
             )}
