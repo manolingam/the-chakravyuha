@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
+import { CONFIG } from '../config';
 
-const connectMongo = async () => mongoose.connect(process.env.MONGODB_URI);
+const connectMongo = async () => mongoose.connect(CONFIG.MONGODB_URI);
 
 export default connectMongo;

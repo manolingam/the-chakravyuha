@@ -176,3 +176,18 @@ export const getQueuedBids = async (hash) => {
   const { data } = await axios.post('/api/graphql/bid', { hash });
   return data;
 };
+
+export const getValhallaFiles = async (signature) => {
+  const data = await axios.post('/api/valhalla/files', {
+    signature
+  });
+  return data.data.response;
+};
+
+export const getValhallaFile = async (key, signature) => {
+  const data = await axios.post('/api/valhalla/channel', {
+    key,
+    signature
+  });
+  return data.data.channel;
+};

@@ -44,7 +44,7 @@ const Index = ({ members }) => {
             <i className='fa-solid fa-lock'></i>
           </Box>
           <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
-            You are not a member
+            You are either not whitelisted or a member on chain.
           </Text>
         </Flex>
       ) : (

@@ -20,7 +20,14 @@ export const Footer = () => {
         color='greyLight'
         mx='auto'
       >
-        Vyugam - v0.0.1
+        Vyugam - v0.0.1 by{' '}
+        <Link
+          href='https://twitter.com/saimano1996'
+          isExternal
+          textDecoration='underline'
+        >
+          Saimano
+        </Link>
       </Text>
     </Flex>
   );

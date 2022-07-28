@@ -6,6 +6,7 @@ import typeDefs from '../../schema/typedefs';
 import resolvers from '../../schema/resolvers';
 
 import connectMongo from '../../utils/mongoose';
+import { CONFIG } from '../../config';
 
 const apolloServer = new ApolloServer({
   typeDefs,
@@ -15,7 +16,7 @@ const apolloServer = new ApolloServer({
     const { authorization } = req.headers;
     const token = authorization && authorization.split(' ')[1];
     try {
-      verify(token, process.env.JWT_SECRET);
+      verify(token, CONFIG.JWT_SECRET);
       return;
     } catch (e) {
       throw Error('Unauthorized');
