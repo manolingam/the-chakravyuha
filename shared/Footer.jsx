@@ -20,7 +20,7 @@ export const Footer = () => {
         color='greyLight'
         mx='auto'
       >
-        Vyugam - Yudhistira by{' '}
+        Vyugam - Sahadeva by{' '}
         <Link
           href='https://twitter.com/saimano1996'
           isExternal
