@@ -133,7 +133,3 @@ export const RAID_CATEGORY = [
 ];
 
 export const MONGO_RECORD_LIMIT = 10;
-
-export const WHITELISTED_MEMBERS = [
-  '0xe68967c95f5a9bccfdd711a2cbc23ec958f147ef'
-];

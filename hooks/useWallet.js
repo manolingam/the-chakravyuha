@@ -7,7 +7,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider';
 import { AppContext } from '../context/AppContext';
 
 import { INFURA_ID } from '../config';
-import { SIGNATURE_MESSAGE, WHITELISTED_MEMBERS } from '../utils/constants';
+import { SIGNATURE_MESSAGE } from '../utils/constants';
 import { getMemberByAddress } from '../utils/requests';
 import { validateMembership } from '../utils/web3';
 import { getProfile } from '../utils/3Box';
@@ -27,19 +27,7 @@ export const useWallet = () => {
   const context = useContext(AppContext);
 
   useEffect(() => {
-    if (
-      context.signerAddress &&
-      WHITELISTED_MEMBERS.includes(context.signerAddress.toLowerCase())
-    ) {
-      checkMembership();
-    }
-
-    if (
-      context.signerAddress &&
-      !WHITELISTED_MEMBERS.includes(context.signerAddress.toLowerCase())
-    ) {
-      context.setWeb3Data({ profileValidated: true });
-    }
+    context.signerAddress && checkMembership();
   }, [context.signerAddress]);
 
   const getMemberProfile = async () => {
