@@ -35,7 +35,7 @@ export default function Home() {
             >
               Connect your wallet to walk through{' '}
               <Tooltip
-                label='Need to be a whitelisted raidguild member'
+                label='Need to be a raidguild member'
                 placement='auto-start'
               >
                 <i className='fa-solid fa-circle-question'></i>

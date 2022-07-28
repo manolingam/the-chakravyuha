@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Flex, Box, Text, Spinner } from '@chakra-ui/react';
+import { Flex, Box, Text, Spinner, Image, Tooltip } from '@chakra-ui/react';
 import { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from '../../context/AppContext';
@@ -38,12 +38,21 @@ const RaidPage = ({ raidId }) => {
       <Flex w='80%'>
         {!context.signerAddress && (
           <Flex direction='column' alignItems='center' m='auto'>
-            <Box fontSize='40px'>
-              <i className='fa-solid fa-compass'></i>
-            </Box>
-            <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
-              Connect your wallet to enable more portals (RaidGuild Membership
-              Required).
+            <Image src='/assets/illustrations/map.png' alt='map' w='200px' />
+            <Text
+              textAlign='center'
+              maxW='300px'
+              fontFamily='rubik'
+              mt='1rem'
+              color='red'
+            >
+              Connect your wallet to walk through{' '}
+              <Tooltip
+                label='Need to be a raidguild member'
+                placement='auto-start'
+              >
+                <i className='fa-solid fa-circle-question'></i>
+              </Tooltip>
             </Text>
           </Flex>
         )}
