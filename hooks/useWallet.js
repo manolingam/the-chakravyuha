@@ -31,7 +31,10 @@ export const useWallet = () => {
   }, [context.signerAddress]);
 
   const getMemberProfile = async () => {
-    const member = await getMemberByAddress(context.signerAddress);
+    const member = await getMemberByAddress(
+      context.signature,
+      context.signerAddress
+    );
     return member;
   };
 

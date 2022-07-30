@@ -24,7 +24,10 @@ const ApplicationPage = ({ applicationId }) => {
   const [recordValidated, setRecordValidated] = useState(false);
 
   const fetchApplicationRecord = async () => {
-    const _applicationRecord = await getApplication(applicationId);
+    const _applicationRecord = await getApplication(
+      context.signature,
+      applicationId
+    );
     setApplicationRecord(_applicationRecord);
     setRecordValidated(true);
   };

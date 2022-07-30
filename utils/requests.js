@@ -18,11 +18,11 @@ import {
   ESCROW_APOLLO_CLIENT
 } from '../graphql/client';
 
-export const getConsultations = async (filter, skip) => {
+export const getConsultations = async (signature, filter, skip) => {
   try {
     const {
       data: { consultations }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: CONSULTATIONS_QUERY,
       variables: { filter: filter, skip: skip }
     });
@@ -32,11 +32,11 @@ export const getConsultations = async (filter, skip) => {
   }
 };
 
-export const getConsultation = async (id) => {
+export const getConsultation = async (signature, id) => {
   try {
     const {
       data: { consultation }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: CONSULTATION_QUERY,
       variables: { id: `${id}` }
     });
@@ -46,11 +46,11 @@ export const getConsultation = async (id) => {
   }
 };
 
-export const getRaids = async (filter, skip) => {
+export const getRaids = async (signature, filter, skip) => {
   try {
     const {
       data: { raids }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: RAIDS_QUERY,
       variables: { filter: filter, skip: skip }
     });
@@ -60,11 +60,11 @@ export const getRaids = async (filter, skip) => {
   }
 };
 
-export const getRaid = async (id) => {
+export const getRaid = async (signature, id) => {
   try {
     const {
       data: { raid }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: RAID_QUERY,
       variables: { id: `${id}` }
     });
@@ -74,11 +74,11 @@ export const getRaid = async (id) => {
   }
 };
 
-export const getMembers = async (skip) => {
+export const getMembers = async (signature, skip) => {
   try {
     const {
       data: { members }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: MEMBERS_QUERY,
       variables: { skip: `${skip}` }
     });
@@ -88,11 +88,11 @@ export const getMembers = async (skip) => {
   }
 };
 
-export const getChampions = async (member) => {
+export const getChampions = async (signature, member) => {
   try {
     const {
       data: { members }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: MEMBERS_QUERY,
       variables: { member: `${member}` }
     });
@@ -102,11 +102,11 @@ export const getChampions = async (member) => {
   }
 };
 
-export const getMemberById = async (id) => {
+export const getMemberById = async (signature, id) => {
   try {
     const {
       data: { member }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: MEMBER_BY_ID_QUERY,
       variables: { id: `${id}` }
     });
@@ -116,11 +116,11 @@ export const getMemberById = async (id) => {
   }
 };
 
-export const getMemberByAddress = async (eth_address) => {
+export const getMemberByAddress = async (signature, eth_address) => {
   try {
     const {
       data: { member }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: MEMBER_BY_ADDRESS_QUERY,
       variables: { eth_address: `${eth_address}` }
     });
@@ -130,11 +130,11 @@ export const getMemberByAddress = async (eth_address) => {
   }
 };
 
-export const getApplication = async (id) => {
+export const getApplication = async (signature, id) => {
   try {
     const {
       data: { application }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: APPLICATION_QUERY,
       variables: { id: `${id}` }
     });
@@ -144,11 +144,11 @@ export const getApplication = async (id) => {
   }
 };
 
-export const getRaidParty = async (id) => {
+export const getRaidParty = async (signature, id) => {
   try {
     const {
       data: { raidparty }
-    } = await DATABASE_APOLLO_CLIENT.query({
+    } = await DATABASE_APOLLO_CLIENT(signature).query({
       query: RAIDPARTY_QUERY,
       variables: { id: `${id}` }
     });

@@ -13,9 +13,10 @@ import {
   Spinner
 } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 
+import { AppContext } from '../../context/AppContext';
 import { getRaids } from '../../utils/requests';
 import { theme } from '../../styles/theme';
 
@@ -32,6 +33,7 @@ const StyledPrimaryButton = styled(Button)`
 const RECORDS_PER_PAGE = 10;
 
 export const AllRaids = ({ raidsOnLoad }) => {
+  const context = useContext(AppContext);
   const [fetching, setFetching] = useState(false);
 
   const [allRecords, setAllRecords] = useState(raidsOnLoad);
@@ -63,7 +65,7 @@ export const AllRaids = ({ raidsOnLoad }) => {
 
   const fetchRaids = async () => {
     setFetching(true);
-    const records = await getRaids(filterType);
+    const records = await getRaids(context.signature, filterType);
     setAllRecords(records);
     cropRecords(records, 1);
     setFetching(false);

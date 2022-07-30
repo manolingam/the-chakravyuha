@@ -13,9 +13,10 @@ import {
   Spinner
 } from '@chakra-ui/react';
 import styled from '@emotion/styled';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import Link from 'next/link';
 
+import { AppContext } from '../../context/AppContext';
 import { getConsultations } from '../../utils/requests';
 import { theme } from '../../styles/theme';
 
@@ -32,6 +33,7 @@ const StyledPrimaryButton = styled(Button)`
 const RECORDS_PER_PAGE = 10;
 
 export const AllConsultations = ({ consultationsOnLoad }) => {
+  const context = useContext(AppContext);
   const [fetching, setFetching] = useState(false);
 
   const [allRecords, setAllRecords] = useState(consultationsOnLoad);
@@ -63,7 +65,7 @@ export const AllConsultations = ({ consultationsOnLoad }) => {
 
   const fetchConsultations = async () => {
     setFetching(true);
-    const records = await getConsultations(filterType);
+    const records = await getConsultations(context.signature, filterType);
     setAllRecords(records);
     cropRecords(records, 1);
     setFetching(false);
