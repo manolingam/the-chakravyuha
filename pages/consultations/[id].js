@@ -24,7 +24,10 @@ const ConsultationPage = ({ consultationId }) => {
   const [recordValidated, setRecordValidated] = useState(false);
 
   const fetchConsultationRecord = async () => {
-    const _consultationRecord = await getConsultation(consultationId);
+    const _consultationRecord = await getConsultation(
+      context.signature,
+      consultationId
+    );
     setConsultationRecord(_consultationRecord);
     setRecordValidated(true);
   };

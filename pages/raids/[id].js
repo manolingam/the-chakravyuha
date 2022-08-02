@@ -24,7 +24,7 @@ const RaidPage = ({ raidId }) => {
   const [recordValidated, setRecordValidated] = useState(false);
 
   const fetchRaidRecord = async () => {
-    const _raidRecord = await getRaid(raidId);
+    const _raidRecord = await getRaid(context.signature, raidId);
     setRaidRecord(_raidRecord);
     setRecordValidated(true);
   };

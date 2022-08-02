@@ -115,7 +115,7 @@ export const Member = ({ member }) => {
   };
 
   const getMyChampions = async () => {
-    const members = await getChampions(_id);
+    const members = await getChampions(context.signature, _id);
     setChampions(members);
   };
 

@@ -24,7 +24,7 @@ const RaidPage = ({ memberId }) => {
   const [recordValidated, setRecordValidated] = useState(false);
 
   const fetchMemberRecord = async () => {
-    const _memberRecord = await getMemberById(memberId);
+    const _memberRecord = await getMemberById(context.signature, memberId);
     setMemberRecord(_memberRecord);
     setRecordValidated(true);
   };
