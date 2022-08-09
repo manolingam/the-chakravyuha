@@ -133,3 +133,9 @@ export const RAID_CATEGORY = [
 ];
 
 export const MONGO_RECORD_LIMIT = 10;
+
+export const WHITELISTED_ADDRESSES = {
+  '0x9ae7b89bcebe350cbbcdb7dd66e89c7d3629d641': ['Raids'],
+  '0xe7358d1805f27bae1031c37d54e29888c7c87622': ['Raids'],
+  '0xbff313837774f68cb4c03854fb40b88e57b8fbca': ['Raids']
+};

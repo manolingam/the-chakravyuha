@@ -33,8 +33,9 @@ const ConsultationPage = ({ consultationId }) => {
   };
 
   useEffect(() => {
-    context.isMember && fetchConsultationRecord();
-  }, [context.isMember]);
+    if (context.isMember || context.whitelistedAccess.includes('Consultations'))
+      fetchConsultationRecord();
+  }, [context.isMember, context.whitelistedAccess]);
 
   return (
     <>
@@ -71,28 +72,31 @@ const ConsultationPage = ({ consultationId }) => {
           </Flex>
         )}
 
-        {context.profileValidated && (
-          <>
-            {!context.isMember && (
-              <Flex direction='column' alignItems='center' m='auto'>
-                <Box fontSize='40px'>
-                  <i className='fa-solid fa-lock'></i>
-                </Box>
-                <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
-                  You are not a member onchain.
-                </Text>
-              </Flex>
-            )}
-            {context.isMember && (
-              <>
-                {recordValidated && consultationRecord && (
-                  <Consultation consultation={consultationRecord} />
-                )}
-                {recordValidated && !consultationRecord && <Page404 />}
-              </>
-            )}
-          </>
-        )}
+        {context.profileValidated &&
+          (context.whitelistedAccess.includes('Consultations') ? (
+            <>
+              {recordValidated && consultationRecord && (
+                <Consultation consultation={consultationRecord} />
+              )}
+              {recordValidated && !consultationRecord && <Page404 />}
+            </>
+          ) : context.isMember ? (
+            <>
+              {recordValidated && consultationRecord && (
+                <Consultation consultation={consultationRecord} />
+              )}
+              {recordValidated && !consultationRecord && <Page404 />}
+            </>
+          ) : (
+            <Flex direction='column' alignItems='center' m='auto'>
+              <Box fontSize='40px'>
+                <i className='fa-solid fa-lock'></i>
+              </Box>
+              <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
+                You are not a member onchain.
+              </Text>
+            </Flex>
+          ))}
       </Flex>
     </>
   );

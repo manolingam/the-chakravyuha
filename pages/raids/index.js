@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Flex, Box, Text, Spinner, Image, Tooltip } from '@chakra-ui/react';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 
 import { AppContext } from '../../context/AppContext';
 import { AllRaids } from '../../views/raids/AllRaids';
@@ -10,7 +10,6 @@ import Raid from '../../models/raid';
 
 export async function getServerSideProps(context) {
   await connectMongo();
-  // const recordCount = await Raid.find({ status: 'Awaiting' }).count();
   const raids = await Raid.find({ status: 'Awaiting' });
   return {
     props: {
@@ -21,7 +20,6 @@ export async function getServerSideProps(context) {
 
 const Index = ({ raids }) => {
   const context = useContext(AppContext);
-  const [accountValidated, setAccountValidated] = useState(false);
 
   return (
     <Flex w='80%'>
@@ -46,7 +44,7 @@ const Index = ({ raids }) => {
         </Flex>
       )}
 
-      {context.isMember ? (
+      {context.isMember || context.whitelistedAccess.includes('Raids') ? (
         <AllRaids raidsOnLoad={JSON.parse(raids)} />
       ) : context.profileValidated ? (
         <Flex direction='column' alignItems='center' m='auto'>

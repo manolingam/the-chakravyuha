@@ -45,7 +45,8 @@ const Index = ({ applications }) => {
         </Flex>
       )}
 
-      {context.isMember ? (
+      {context.isMember ||
+      context.whitelistedAccess.includes('Applications') ? (
         <AllApplications applicationsOnLoad={JSON.parse(applications)} />
       ) : context.profileValidated ? (
         <Flex direction='column' alignItems='center' m='auto'>

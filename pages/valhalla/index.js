@@ -70,7 +70,7 @@ const Index = () => {
         </Flex>
       )}
 
-      {context.isMember ? (
+      {context.isMember || context.whitelistedAccess.includes('Valhalla') ? (
         !fetching ? (
           files.length && (
             <Flex direction='column'>
