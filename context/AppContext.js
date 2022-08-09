@@ -8,6 +8,8 @@ class AppContextProvider extends Component {
     signerAddress: null,
     signature: null,
     isMember: false,
+    isWhitelisted: false,
+    whitelistedAccess: [],
     member: null,
     profileImage: null,
     profileValidated: false

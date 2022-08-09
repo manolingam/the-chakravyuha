@@ -30,8 +30,9 @@ const RaidPage = ({ raidId }) => {
   };
 
   useEffect(() => {
-    context.isMember && fetchRaidRecord();
-  }, [context.isMember]);
+    if (context.isMember || context.whitelistedAccess.includes('Raids'))
+      fetchRaidRecord();
+  }, [context.isMember, context.whitelistedAccess]);
 
   return (
     <>
@@ -68,26 +69,27 @@ const RaidPage = ({ raidId }) => {
           </Flex>
         )}
 
-        {context.profileValidated && (
-          <>
-            {!context.isMember && (
-              <Flex direction='column' alignItems='center' m='auto'>
-                <Box fontSize='40px'>
-                  <i className='fa-solid fa-lock'></i>
-                </Box>
-                <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
-                  You are not a member onchain.
-                </Text>
-              </Flex>
-            )}
-            {context.isMember && (
-              <>
-                {recordValidated && raidRecord && <Raid raid={raidRecord} />}
-                {recordValidated && !raidRecord && <Page404 />}
-              </>
-            )}
-          </>
-        )}
+        {context.profileValidated &&
+          (context.whitelistedAccess.includes('Raids') ? (
+            <>
+              {recordValidated && raidRecord && <Raid raid={raidRecord} />}
+              {recordValidated && !raidRecord && <Page404 />}
+            </>
+          ) : context.isMember ? (
+            <>
+              {recordValidated && raidRecord && <Raid raid={raidRecord} />}
+              {recordValidated && !raidRecord && <Page404 />}
+            </>
+          ) : (
+            <Flex direction='column' alignItems='center' m='auto'>
+              <Box fontSize='40px'>
+                <i className='fa-solid fa-lock'></i>
+              </Box>
+              <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
+                You are not a member onchain.
+              </Text>
+            </Flex>
+          ))}
       </Flex>
     </>
   );

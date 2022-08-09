@@ -57,36 +57,34 @@ export default function Home() {
 
         {context.profileValidated && (
           <Flex direction='column' alignItems='center' m='auto'>
+            {context.profileImage && (
+              <Image
+                src={context.profileImage}
+                w='100px'
+                borderRadius='50%'
+                alt='profile image'
+              />
+            )}
             {context.member ? (
-              <>
-                {context.profileImage && (
-                  <Image
-                    src={context.profileImage}
-                    w='100px'
-                    borderRadius='50%'
-                    alt='profile image'
-                  />
-                )}
-                <Text
-                  textAlign='center'
-                  maxW='500px'
-                  fontFamily='uncial'
-                  fontSize='18px'
-                  mt='1rem'
-                  color='red'
-                  textDecoration='underline'
-                  onClick={() => router.push(`/members/${context.member._id}`)}
-                  cursor='pointer'
-                  _hover={{ color: 'black' }}
-                >
-                  {`Welcome ${context.member.name}`}!
-                </Text>
-              </>
+              <Text
+                textAlign='center'
+                maxW='500px'
+                fontFamily='uncial'
+                fontSize='18px'
+                mt='1rem'
+                color='red'
+                textDecoration='underline'
+                onClick={() => router.push(`/members/${context.member._id}`)}
+                cursor='pointer'
+                _hover={{ color: 'black' }}
+              >
+                {`Welcome ${context.member.name}`}!
+              </Text>
             ) : context.isMember ? (
               <Text textAlign='center' maxW='500px' fontFamily='spaceMono'>
                 You are a member onchain but no records found offchain.
               </Text>
-            ) : (
+            ) : !context.isMember && !context.isWhitelisted ? (
               <>
                 <Box fontSize='40px' color='black'>
                   <i className='fa-solid fa-lock'></i>
@@ -95,6 +93,18 @@ export default function Home() {
                   You are not a member onchain.
                 </Text>
               </>
+            ) : (
+              <Text
+                textAlign='center'
+                maxW='500px'
+                fontFamily='uncial'
+                fontSize='18px'
+                mt='1rem'
+                color='red'
+              >
+                Welcome! You are whitelisted to access{' '}
+                {context.whitelistedAccess}.
+              </Text>
             )}
           </Flex>
         )}
@@ -112,8 +122,16 @@ export default function Home() {
             w='100%'
             h='100%'
             justifyContent='center'
-            isDisabled={!context.isMember}
-            bg={context.isMember ? 'red' : 'greyLight'}
+            isDisabled={
+              !context.isMember &&
+              !context.whitelistedAccess.includes('Consultations')
+            }
+            bg={
+              context.isMember ||
+              context.whitelistedAccess.includes('Consultations')
+                ? 'red'
+                : 'greyLight'
+            }
             onClick={() => router.push('/consultations')}
             textTransform='uppercase'
           >
@@ -129,8 +147,14 @@ export default function Home() {
             w='100%'
             h='100%'
             justifyContent='center'
-            isDisabled={!context.isMember}
-            bg={context.isMember ? 'red' : 'greyLight'}
+            isDisabled={
+              !context.isMember && !context.whitelistedAccess.includes('Raids')
+            }
+            bg={
+              context.isMember || context.whitelistedAccess.includes('Raids')
+                ? 'red'
+                : 'greyLight'
+            }
             onClick={() => router.push('/raids')}
             textTransform='uppercase'
           >
@@ -145,8 +169,16 @@ export default function Home() {
             w='100%'
             h='100%'
             justifyContent='center'
-            isDisabled={!context.isMember}
-            bg={context.isMember ? 'red' : 'greyLight'}
+            isDisabled={
+              !context.isMember &&
+              !context.whitelistedAccess.includes('Applications')
+            }
+            bg={
+              context.isMember ||
+              context.whitelistedAccess.includes('Applications')
+                ? 'red'
+                : 'greyLight'
+            }
             onClick={() => router.push('/applications')}
             textTransform='uppercase'
           >
@@ -161,8 +193,15 @@ export default function Home() {
             w='100%'
             h='100%'
             justifyContent='center'
-            isDisabled={!context.isMember}
-            bg={context.isMember ? 'red' : 'greyLight'}
+            isDisabled={
+              !context.isMember &&
+              !context.whitelistedAccess.includes('Members')
+            }
+            bg={
+              context.isMember || context.whitelistedAccess.includes('Members')
+                ? 'red'
+                : 'greyLight'
+            }
             onClick={() => router.push('/members')}
             textTransform='uppercase'
           >
@@ -225,8 +264,15 @@ export default function Home() {
             w='100%'
             h='100%'
             justifyContent='center'
-            isDisabled={!context.isMember}
-            bg={context.isMember ? 'red' : 'greyLight'}
+            isDisabled={
+              !context.isMember &&
+              !context.whitelistedAccess.includes('Valhalla')
+            }
+            bg={
+              context.isMember || context.whitelistedAccess.includes('Valhalla')
+                ? 'red'
+                : 'greyLight'
+            }
             onClick={() => router.push('/valhalla')}
             textTransform='uppercase'
           >

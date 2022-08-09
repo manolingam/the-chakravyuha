@@ -48,7 +48,8 @@ const Index = ({ consultations }) => {
         </Flex>
       )}
 
-      {context.isMember ? (
+      {context.isMember ||
+      context.whitelistedAccess.includes('Consultations') ? (
         <AllConsultations consultationsOnLoad={JSON.parse(consultations)} />
       ) : context.profileValidated ? (
         <Flex direction='column' alignItems='center' m='auto'>
